@@ -1,6 +1,5 @@
 package com.test.hormigas;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.Random;
 import java.util.Vector;
@@ -111,10 +109,6 @@ public class PantallaHormiga implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
         //TODO cerrar aplicaciones
         }
-
-        // Si la aplicación no se ejecuta en el ordenador sale del metodo
-        if (Gdx.app.getType() != Application.ApplicationType.Desktop)
-            return;
 
         Vector3 touchPoint = new Vector3();
 
