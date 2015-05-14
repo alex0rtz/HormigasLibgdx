@@ -105,7 +105,7 @@ public class PantallaHormiga implements Screen {
 
     private void processInput() {
 
-        // Se ejecuta cuando le das ESC (ordenador) y Atras (mobil).
+        // Se ejecuta cuando le das ESC (ordenador) y Atras (movil).
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
         //TODO cerrar aplicaciones
         }
@@ -117,7 +117,7 @@ public class PantallaHormiga implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.justTouched()) {
 
             //TODO añadir hormiga
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 5; i++) {
                 Random ran = new Random();
                 hormigas.insertElementAt(new Hormiga(ran.nextInt(5) + 1, touchPoint.x, touchPoint.y), posHormigas);
                 stage.addActor(hormigas.get(posHormigas));
