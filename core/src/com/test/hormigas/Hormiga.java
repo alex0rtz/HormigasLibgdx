@@ -34,7 +34,7 @@ public class Hormiga extends Actor {
     public static final int AZUL = 4;
     public static final int ROSA = 5;
 
-    public static final int TAMANO = 80;
+    public static final int TAMANO = 30;
 
     Rectangle bounds;
     Polygon polygon;
@@ -102,7 +102,7 @@ public class Hormiga extends Actor {
      * ACCIONES DE LA HORMIGA
      */
 
-     public Animation getAnimation() {
+    public Animation getAnimation() {
         switch (tipo) {
             case VERDE:
                 return Assets.animationVerde;
@@ -120,22 +120,21 @@ public class Hormiga extends Actor {
     public void moverHormigas() {
         Random ran = new Random();
 
-        float x = ran.nextInt(1000) - 499;
-        float y = ran.nextInt(1000) - 499;
+        int x = ran.nextInt(1000) - 499;
+        int y = ran.nextInt(1000) - 499;
 
         float p = (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         float tiempo = p / 200;
 
         addAction(Actions.forever(Actions.parallel(
                         Actions.moveBy(x, y, tiempo),
-                        Actions.rotateTo(getAngle(getX(), getY(), x, y), 0.1f)
+                        Actions.rotateTo((float) getAngle(getX(), getY(), x, y), 0.1f)
                 )
         ));
     }
 
-
-    public float getAngle(float x, float y, float x2, float y2) {
-        float angle = (float) Math.toDegrees(Math.atan2((y + y2) - y, (x + x2) - x)) - 90;
+    public double getAngle(float x, float y, float targetX, float targetY) {
+        float angle = (float) Math.toDegrees(Math.atan2((y + targetY) - y, (x + targetX) - x)) - 90;
 
         if (angle < 0) {
             angle += 360;
@@ -143,7 +142,6 @@ public class Hormiga extends Actor {
 
         return angle;
     }
-
 
     public void detectarColision() {
         for (int i = 0; i < PantallaHormiga.getPosHormigas(); i++) {
@@ -153,34 +151,23 @@ public class Hormiga extends Actor {
             if (chocada)
                 return;
 
-            if (polygon2.contains(polygon.getX(), polygon.getY())) {
-                chocado(PantallaHormiga.getHormigas().get(i), 1);
-            } else if (polygon2.contains(polygon.getX() + TAMANO, polygon.getY())) {
-                chocado(PantallaHormiga.getHormigas().get(i), 2);
-            } else if (polygon2.contains(polygon.getX() + TAMANO, polygon.getY() + TAMANO)) {
-                chocado(PantallaHormiga.getHormigas().get(i), 3);
-            } else if (polygon2.contains(polygon.getX(), polygon.getY() + TAMANO)) {
-                chocado(PantallaHormiga.getHormigas().get(i), 4);
-
+            if (polygon2.contains(polygon.getX(), polygon.getY())
+                    || polygon2.contains(polygon.getX() + TAMANO, polygon.getY())
+                    || polygon2.contains(polygon.getX() + TAMANO, polygon.getY() + TAMANO)
+                    || polygon2.contains(polygon.getX(), polygon.getY() + TAMANO)) {
+                chocado(PantallaHormiga.getHormigas().get(i));
             }
         }
     }
 
-    public void chocado(final Hormiga hormiga, int num) {
+    public void chocado(final Hormiga hormiga) {
         chocada = true;
         clearActions();
         hormiga.clearActions();
-
-        float hormigaX = hormiga.getOriginX();
-        float hormigaY = hormiga.getOriginY();
-
-
-        setRotation(getAngle(hormigaX, hormigaY, getOriginX(), getOriginY()));
-        hormiga.setRotation(getAngle(getOriginX(), getOriginY(), hormigaX, hormigaY));
+        moverHormigas();
+        hormiga.moverHormigas();
 
 
-        //moverHormigas();
-        //hormiga.moverHormigas();
 
         addAction(Actions.delay(0.1f, Actions.run(new Runnable() {
             @Override
@@ -194,15 +181,11 @@ public class Hormiga extends Actor {
                 hormiga.chocada = false;
             }
         })));
-        /*
-        System.out.println("Choque en IF: " + num);
-        System.out.println("Hormiga 1: X = " + getX() + " Y = " + getY());
-        System.out.println("Hormiga 2: X = " + hormiga.getX() + " Y = " + hormiga.getY());
-        System.out.println("Poligono 1: X = " + polygon.getX() + " Y = " + polygon.getY());
-        System.out.println("Poligono 2: X = " + hormiga.getPolygon().getX() + " Y = " + hormiga.getPolygon().getY());
-        */
     }
 
+    public void enfrentarse() {
+
+    }
 
     /**
      * GETTERS AND SETTERS
