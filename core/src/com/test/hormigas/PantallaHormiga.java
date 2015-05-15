@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -45,7 +46,7 @@ public class PantallaHormiga implements Screen {
 
         crearHormiga(2);
 
-        crearPlanta(2);
+        crearPlanta(5);
     }
 
     @Override
@@ -57,10 +58,18 @@ public class PantallaHormiga implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor(1, 1, 1, 1);
 
+        act(delta);
+        draw();
+    }
+
+
+    public void act(float delta) {
         stage.act(delta);
-
         processInput();
+        detectarColision();
+    }
 
+    public void draw() {
         stage.draw();
     }
 
@@ -106,10 +115,46 @@ public class PantallaHormiga implements Screen {
     public void crearPlanta(int numero){
         for (int i = 0; i < numero; i++) {
             Random ran = new Random();
-            plantas.insertElementAt(new Planta(ran.nextInt(Gdx.graphics.getWidth() - Hormiga.TAMANO), ran.nextInt(Gdx.graphics.getWidth() - Hormiga.TAMANO)), posPlantas);
+            plantas.insertElementAt(new Planta(ran.nextInt(Assets.screenWidth - Hormiga.TAMANO), ran.nextInt(Assets.screenHeight - Hormiga.TAMANO)), posPlantas);
             stage.addActor(plantas.get(posPlantas));
             posPlantas++;
         }
+    }
+
+    public void detectarColision() {
+        for (int i = 0; i < PantallaHormiga.getPosHormigas(); i++) {
+            for (int j = 0; j < PantallaHormiga.getPosHormigas(); j++) {
+                if (hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX(), hormigas.get(i).polygon.getY())
+                        || hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX() + hormigas.get(i).TAMANO, hormigas.get(i).polygon.getY())
+                        || hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX() + hormigas.get(i).TAMANO, hormigas.get(i).polygon.getY() + hormigas.get(i).TAMANO)
+                        || hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX(), hormigas.get(i).polygon.getY() + hormigas.get(i).TAMANO)) {
+                    chocado(PantallaHormiga.getHormigas().get(i), PantallaHormiga.getHormigas().get(j));
+                }
+            }
+        }
+    }
+
+    public void chocado(final Hormiga hormiga1, final Hormiga hormiga2) {
+        hormiga1.setChocada(true);
+        hormiga2.setChocada(true);
+        hormiga1.clearActions();
+        hormiga2.clearActions();
+        hormiga1.mover();
+        hormiga2.mover();
+
+
+        hormiga1.addAction(Actions.delay(0.1f, Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                hormiga1.setChocada(false);
+            }
+        })));
+        hormiga2.addAction(Actions.delay(0.1f, Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                hormiga2.setChocada(false);
+            }
+        })));
     }
 
     private void processInput() {

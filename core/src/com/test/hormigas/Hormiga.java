@@ -90,8 +90,6 @@ public class Hormiga extends Actor {
             mover();
         }
 
-        detectarColision();
-
     }
 
     @Override
@@ -144,50 +142,6 @@ public class Hormiga extends Actor {
         return angle;
     }
 
-    public void detectarColision() {
-        for (int i = 0; i < PantallaHormiga.getPosHormigas(); i++) {
-
-            Polygon polygon2 = PantallaHormiga.getHormigas().get(i).getPolygon();
-
-            if (chocada)
-                return;
-
-            if (polygon2.contains(polygon.getX(), polygon.getY())
-                    || polygon2.contains(polygon.getX() + TAMANO, polygon.getY())
-                    || polygon2.contains(polygon.getX() + TAMANO, polygon.getY() + TAMANO)
-                    || polygon2.contains(polygon.getX(), polygon.getY() + TAMANO)) {
-                chocado(PantallaHormiga.getHormigas().get(i));
-            }
-        }
-    }
-
-    public void chocado(final Hormiga hormiga) {
-        chocada = true;
-        clearActions();
-        hormiga.clearActions();
-        mover();
-        hormiga.mover();
-
-
-
-        addAction(Actions.delay(0.1f, Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                chocada = false;
-            }
-        })));
-        hormiga.addAction(Actions.delay(0.1f, Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                hormiga.chocada = false;
-            }
-        })));
-    }
-
-    public void enfrentarse() {
-
-    }
-
     /**
      * GETTERS AND SETTERS
      */
@@ -197,5 +151,13 @@ public class Hormiga extends Actor {
 
     public Polygon getPolygon() {
         return polygon;
+    }
+
+    public boolean isChocada() {
+        return chocada;
+    }
+
+    public void setChocada(boolean chocada) {
+        this.chocada = chocada;
     }
 }
