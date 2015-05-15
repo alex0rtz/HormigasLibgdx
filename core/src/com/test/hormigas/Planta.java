@@ -3,15 +3,16 @@ package com.test.hormigas;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class Planta extends Actor {
+public class Planta extends MyActor {
 
     private Texture texture;
 
-    public static final int TAMANO = 40;
+    public static final float TAMANO = Hormiga.TAMANO * 1.5f;
 
-    public Planta (int posX, int posY){
+    public Planta(float posX, float posY) {
+        super(posX, posY, TAMANO);
+
         setBounds(posX, posY, TAMANO, TAMANO);
         setOrigin(TAMANO / 2, TAMANO / 2);
     }

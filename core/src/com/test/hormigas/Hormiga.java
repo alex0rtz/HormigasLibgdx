@@ -2,14 +2,12 @@ package com.test.hormigas;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.Random;
 
-public class Hormiga extends Actor {
+public class Hormiga extends MyActor {
 
     // https://github.com/JavadocMD/JackJaneRace/blob/master/actionTest/src/com/javadocmd/actionTest/actor/RunnerActor.java
 
@@ -34,29 +32,22 @@ public class Hormiga extends Actor {
     public static final int AZUL = 4;
     public static final int ROSA = 5;
 
-    public static final int TAMANO = 35;
+    public static final int TAMANO = 30;
     private static final float VELOCIDAD = 200;
     private static final float TIEMPO_GIRO = 0.1f;
     public static final float TIEMPO_CHOQUE = 0.2f;
-
-    Rectangle bounds;
-    Polygon polygon;
 
     /**
      * CONSTRUCTOR
      */
 
     public Hormiga(int tipo, float posX, float posY) {
+        super(posX, posY, TAMANO);
         setBounds(posX, posY, TAMANO, TAMANO);
 
         this.tipo = tipo;
         animation = getAnimation();
         setOrigin(TAMANO / 2, TAMANO / 2);
-
-        bounds = new Rectangle(getX(), getY(), TAMANO, TAMANO);
-
-        polygon = new Polygon(new float[] { 0, 0, bounds.width, 0, bounds.width, bounds.height, 0, bounds.height });
-        polygon.setOrigin(bounds.width / 2, bounds.height / 2);
     }
 
     /**
@@ -73,8 +64,8 @@ public class Hormiga extends Actor {
         super.act(delta);
         stateTime += delta;
 
-        polygon.setPosition(getX(), getY());
-        polygon.setRotation(getRotation());
+        getPolygon().setPosition(getX(), getY());
+        getPolygon().setRotation(getRotation());
 
         // Comprueba si las hormigas están entre la pantalla y cuando llegan al extremos chocan y cambian de dirección.
         if (getX() < 0 || getX() > Assets.screenWidth - Hormiga.TAMANO || getY() < 0 || getY() > Assets.screenHeight - Hormiga.TAMANO) {
@@ -149,10 +140,6 @@ public class Hormiga extends Actor {
      */
     public int getTipo() {
         return tipo;
-    }
-
-    public Polygon getPolygon() {
-        return polygon;
     }
 
     public boolean isChocada() {
