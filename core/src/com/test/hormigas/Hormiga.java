@@ -36,6 +36,8 @@ public class Hormiga extends Actor {
 
     public static final int TAMANO = 35;
     private static final float VELOCIDAD = 200;
+    private static final float TIEMPO_GIRO = 0.1f;
+    public static final float TIEMPO_CHOQUE = 1f;
 
     Rectangle bounds;
     Polygon polygon;
@@ -127,7 +129,7 @@ public class Hormiga extends Actor {
 
         addAction(Actions.forever(Actions.parallel(
                         Actions.moveBy(x, y, tiempo),
-                        Actions.rotateTo((float) getAngle(getX(), getY(), x, y), 0.1f)
+                        Actions.rotateTo((float) getAngle(getX(), getY(), x, y), TIEMPO_GIRO)
                 )
         ));
     }

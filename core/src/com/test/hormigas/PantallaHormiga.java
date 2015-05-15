@@ -80,22 +80,18 @@ public class PantallaHormiga implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
-
     }
 
     /**
@@ -143,13 +139,13 @@ public class PantallaHormiga implements Screen {
         hormiga2.mover();
 
 
-        hormiga1.addAction(Actions.delay(0.1f, Actions.run(new Runnable() {
+        hormiga1.addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
             @Override
             public void run() {
                 hormiga1.setChocada(false);
             }
         })));
-        hormiga2.addAction(Actions.delay(0.1f, Actions.run(new Runnable() {
+        hormiga2.addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
             @Override
             public void run() {
                 hormiga2.setChocada(false);
