@@ -10,6 +10,7 @@ public class DesktopLauncher {
         config.height = 720;
         config.width = 1280;
 		config.vSyncEnabled  = false;
+		config.title = "Ant simulator";
 		new LwjglApplication(new HormigasGame(), config);
 	}
 }

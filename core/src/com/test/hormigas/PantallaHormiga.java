@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 
 import java.util.Random;
@@ -33,6 +35,13 @@ public class PantallaHormiga implements Screen {
 
         stage = new Stage(viewport, stageBatch);
         Gdx.input.setInputProcessor(stage);
+
+        Image background = new Image(Assets.background);
+        background.setSize(Assets.screenWidth, Assets.screenHeight);
+        background.setScaling(Scaling.fill);
+
+        stage.addActor(background);
+
 
         crearHormiga(2);
 

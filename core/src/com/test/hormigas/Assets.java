@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Assets {
 
+
+    public static Texture background;
+
     private static Texture textureVerde;
     private static Texture textureNaranja;
     private static Texture textureRoja;
@@ -26,6 +29,12 @@ public class Assets {
     public static final int screenHeight = 720;
 
     public static void loadtexture(){
+
+
+        //Textura fondo
+        background = new Texture("arena.png");
+        background.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
         // Textura Planta
         texturePlanta = new Texture(Gdx.files.internal("plant.png"));
 
@@ -44,11 +53,11 @@ public class Assets {
         textureAzul.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         textureRosa.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        animationVerde = Assets.createAnimation(textureVerde, 3, 2, 0.1f);
-        animationNaranja = Assets.createAnimation(textureNaranja, 3, 2, 0.1f);
-        animationRoja = Assets.createAnimation(textureRoja, 3, 2, 0.1f);
-        animationAzul = Assets.createAnimation(textureAzul, 3, 2, 0.1f);
-        animationRosa = Assets.createAnimation(textureRosa, 3, 2, 0.1f);
+        animationVerde = Assets.createAnimation(textureVerde, 3, 2, 0.04f);
+        animationNaranja = Assets.createAnimation(textureNaranja, 3, 2, 0.04f);
+        animationRoja = Assets.createAnimation(textureRoja, 3, 2, 0.04f);
+        animationAzul = Assets.createAnimation(textureAzul, 3, 2, 0.04f);
+        animationRosa = Assets.createAnimation(textureRosa, 3, 2, 0.04f);
     }
 
     public static Animation createAnimation(Texture texture, int columns, int rows, float animTime) {

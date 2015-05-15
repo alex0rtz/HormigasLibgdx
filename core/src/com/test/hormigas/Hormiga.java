@@ -34,7 +34,7 @@ public class Hormiga extends Actor {
     public static final int AZUL = 4;
     public static final int ROSA = 5;
 
-    public static final int TAMANO = 30;
+    public static final int TAMANO = 35;
 
     Rectangle bounds;
     Polygon polygon;
