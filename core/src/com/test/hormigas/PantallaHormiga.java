@@ -98,7 +98,7 @@ public class PantallaHormiga implements Screen {
     public void crearHormiga(int numero) {
         for (int i = 0; i < numero; i++) {
             Random ran = new Random();
-            actores.insertElementAt(new Hormiga(ran.nextInt(5) + 1, ran.nextInt(Assets.screenWidth - Hormiga.TAMANO), ran.nextInt(Assets.screenHeight - Hormiga.TAMANO)), posActores);
+            actores.insertElementAt(new Hormiga(ran.nextInt(5) + 1, ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)), posActores);
             stage.addActor(actores.get(posActores));
             ((Hormiga) actores.get(posActores)).mover();
             posActores++;
@@ -108,7 +108,7 @@ public class PantallaHormiga implements Screen {
     public void crearPlanta(int numero){
         for (int i = 0; i < numero; i++) {
             Random ran = new Random();
-            actores.insertElementAt(new Planta(ran.nextInt(Assets.screenWidth - Hormiga.TAMANO), ran.nextInt(Assets.screenHeight - Hormiga.TAMANO)), posActores);
+            actores.insertElementAt(new Planta(ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)), posActores);
             stage.addActor(actores.get(posActores));
             posActores++;
         }

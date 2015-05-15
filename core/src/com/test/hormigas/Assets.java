@@ -25,8 +25,8 @@ public class Assets {
     public static Animation animationAzul;
     public static Animation animationRosa;
 
-    public static final int screenWidth = 1280;
-    public static final int screenHeight = 720;
+    public static final float screenWidth = 1280;
+    public static final float screenHeight = 720;
 
     public static void loadtexture(){
 
