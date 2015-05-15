@@ -37,7 +37,7 @@ public class Hormiga extends Actor {
     public static final int TAMANO = 35;
     private static final float VELOCIDAD = 200;
     private static final float TIEMPO_GIRO = 0.1f;
-    public static final float TIEMPO_CHOQUE = 1f;
+    public static final float TIEMPO_CHOQUE = 0.2f;
 
     Rectangle bounds;
     Polygon polygon;

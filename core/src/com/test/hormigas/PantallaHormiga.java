@@ -17,6 +17,7 @@ import java.util.Vector;
 
 public class PantallaHormiga implements Screen {
 
+    private static final int HORMIGAS_POR_CLIC = 100;
     private Stage stage;
     private FillViewport viewport;
 
@@ -120,6 +121,10 @@ public class PantallaHormiga implements Screen {
     public void detectarColision() {
         for (int i = 0; i < PantallaHormiga.getPosHormigas(); i++) {
             for (int j = 0; j < PantallaHormiga.getPosHormigas(); j++) {
+
+                if (hormigas.get(j).isChocada() || hormigas.get(i).isChocada())
+                    continue;
+
                 if (hormigas.get(j) != hormigas.get(i) && (hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX(), hormigas.get(i).polygon.getY())
                         || hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX() + hormigas.get(i).TAMANO, hormigas.get(i).polygon.getY())
                         || hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX() + hormigas.get(i).TAMANO, hormigas.get(i).polygon.getY() + hormigas.get(i).TAMANO)
@@ -137,7 +142,6 @@ public class PantallaHormiga implements Screen {
         hormiga2.clearActions();
         hormiga1.mover();
         hormiga2.mover();
-
 
         hormiga1.addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
             @Override
@@ -167,7 +171,7 @@ public class PantallaHormiga implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.justTouched()) {
 
             //TODO añadir hormiga
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < HORMIGAS_POR_CLIC; i++) {
                 Random ran = new Random();
                 hormigas.insertElementAt(new Hormiga(ran.nextInt(5) + 1, touchPoint.x, touchPoint.y), posHormigas);
                 stage.addActor(hormigas.get(posHormigas));
