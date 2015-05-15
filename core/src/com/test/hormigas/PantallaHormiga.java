@@ -98,7 +98,7 @@ public class PantallaHormiga implements Screen {
             Random ran = new Random();
             hormigas.insertElementAt(new Hormiga(ran.nextInt(5) + 1, ran.nextInt(Assets.screenWidth - Hormiga.TAMANO), ran.nextInt(Assets.screenHeight - Hormiga.TAMANO)), posHormigas);
             stage.addActor(hormigas.get(posHormigas));
-            hormigas.get(posHormigas).moverHormigas();
+            hormigas.get(posHormigas).mover();
             posHormigas++;
         }
     }
@@ -126,11 +126,11 @@ public class PantallaHormiga implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.justTouched()) {
 
             //TODO añadir hormiga
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 1; i++) {
                 Random ran = new Random();
                 hormigas.insertElementAt(new Hormiga(ran.nextInt(5) + 1, touchPoint.x, touchPoint.y), posHormigas);
                 stage.addActor(hormigas.get(posHormigas));
-                hormigas.get(posHormigas).moverHormigas();
+                hormigas.get(posHormigas).mover();
                 posHormigas++;
             }
         }

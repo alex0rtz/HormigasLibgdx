@@ -35,6 +35,7 @@ public class Hormiga extends Actor {
     public static final int ROSA = 5;
 
     public static final int TAMANO = 35;
+    private static final float VELOCIDAD = 200;
 
     Rectangle bounds;
     Polygon polygon;
@@ -86,7 +87,7 @@ public class Hormiga extends Actor {
             else if (getY() >= Assets.screenHeight - Hormiga.TAMANO)
                 setY(Assets.screenHeight - Hormiga.TAMANO);
 
-            moverHormigas();
+            mover();
         }
 
         detectarColision();
@@ -117,14 +118,14 @@ public class Hormiga extends Actor {
         }
     }
 
-    public void moverHormigas() {
+    public void mover() {
         Random ran = new Random();
 
         int x = ran.nextInt(1000) - 499;
         int y = ran.nextInt(1000) - 499;
 
         float p = (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        float tiempo = p / 200;
+        float tiempo = p / VELOCIDAD;
 
         addAction(Actions.forever(Actions.parallel(
                         Actions.moveBy(x, y, tiempo),
@@ -164,8 +165,8 @@ public class Hormiga extends Actor {
         chocada = true;
         clearActions();
         hormiga.clearActions();
-        moverHormigas();
-        hormiga.moverHormigas();
+        mover();
+        hormiga.mover();
 
 
 
