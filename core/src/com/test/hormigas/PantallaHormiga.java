@@ -17,7 +17,7 @@ import java.util.Vector;
 
 public class PantallaHormiga implements Screen {
 
-    private static final int HORMIGAS_POR_CLIC = 100;
+    private static final int HORMIGAS_POR_CLIC = 50;
     private Stage stage;
     private FillViewport viewport;
 
@@ -136,25 +136,31 @@ public class PantallaHormiga implements Screen {
     }
 
     public void chocado(final Hormiga hormiga1, final Hormiga hormiga2) {
-        hormiga1.setChocada(true);
-        hormiga2.setChocada(true);
-        hormiga1.clearActions();
-        hormiga2.clearActions();
-        hormiga1.mover();
-        hormiga2.mover();
 
-        hormiga1.addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                hormiga1.setChocada(false);
-            }
-        })));
-        hormiga2.addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                hormiga2.setChocada(false);
-            }
-        })));
+
+        if (!hormiga1.isChocada()) {
+            hormiga1.setChocada(true);
+            hormiga1.clearActions();
+            hormiga1.mover();
+            hormiga1.addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    hormiga1.setChocada(false);
+                }
+            })));
+        }
+
+        if (!hormiga2.isChocada()) {
+            hormiga2.setChocada(true);
+            hormiga2.clearActions();
+            hormiga2.mover();
+            hormiga2.addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    hormiga2.setChocada(false);
+                }
+            })));
+        }
     }
 
     private void processInput() {
