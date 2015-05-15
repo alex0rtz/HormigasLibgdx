@@ -120,10 +120,10 @@ public class PantallaHormiga implements Screen {
     public void detectarColision() {
         for (int i = 0; i < PantallaHormiga.getPosHormigas(); i++) {
             for (int j = 0; j < PantallaHormiga.getPosHormigas(); j++) {
-                if (hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX(), hormigas.get(i).polygon.getY())
+                if (hormigas.get(j) != hormigas.get(i) && (hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX(), hormigas.get(i).polygon.getY())
                         || hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX() + hormigas.get(i).TAMANO, hormigas.get(i).polygon.getY())
                         || hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX() + hormigas.get(i).TAMANO, hormigas.get(i).polygon.getY() + hormigas.get(i).TAMANO)
-                        || hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX(), hormigas.get(i).polygon.getY() + hormigas.get(i).TAMANO)) {
+                        || hormigas.get(j).polygon.contains(hormigas.get(i).polygon.getX(), hormigas.get(i).polygon.getY() + hormigas.get(i).TAMANO))) {
                     chocado(PantallaHormiga.getHormigas().get(i), PantallaHormiga.getHormigas().get(j));
                 }
             }
