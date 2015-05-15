@@ -35,7 +35,7 @@ public class Hormiga extends MyActor {
     public static final int TAMANO = 30;
     private static final float VELOCIDAD = 200;
     private static final float TIEMPO_GIRO = 0.1f;
-    public static final float TIEMPO_CHOQUE = 0.2f;
+    public static final float TIEMPO_CHOQUE = 0.9f;
 
     /**
      * CONSTRUCTOR
@@ -123,6 +123,13 @@ public class Hormiga extends MyActor {
                         Actions.rotateTo((float) getAngle(getX(), getY(), x, y), TIEMPO_GIRO)
                 )
         ));
+
+        addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                setChocada(false);
+            }
+        })));
     }
 
     public double getAngle(float x, float y, float targetX, float targetY) {

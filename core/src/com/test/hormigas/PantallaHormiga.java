@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -17,7 +16,7 @@ import java.util.Vector;
 
 public class PantallaHormiga implements Screen {
 
-    private static final int HORMIGAS_POR_CLIC = 50;
+    private static final int HORMIGAS_POR_CLIC = 100;
     private Stage stage;
     private FillViewport viewport;
 
@@ -121,37 +120,48 @@ public class PantallaHormiga implements Screen {
                         || actores.get(j).getPolygon().contains(actores.get(i).getPolygon().getX() + actores.get(i).getTamano(), actores.get(i).getPolygon().getY())
                         || actores.get(j).getPolygon().contains(actores.get(i).getPolygon().getX() + actores.get(i).getTamano(), actores.get(i).getPolygon().getY() + actores.get(i).getTamano())
                         || actores.get(j).getPolygon().contains(actores.get(i).getPolygon().getX(), actores.get(i).getPolygon().getY() + actores.get(i).getTamano()))) {
-                    chocado(actores.get(i), actores.get(j));
+                    choque(actores.get(i), actores.get(j));
                 }
             }
         }
     }
 
-    public void chocado(final MyActor actor1, final MyActor actor2) {
+    public void choque(final MyActor actor1, final MyActor actor2) {
+
+        if (actor1.getClass() == Hormiga.class && actor2.getClass() == Hormiga.class)
+            choqueEntreHormigas((Hormiga) actor1, (Hormiga) actor2);
+        else if (actor1.getClass() == Hormiga.class && actor2.getClass() == Planta.class)
+            choqueHormigaPlanta((Hormiga) actor1, (Planta) actor2);
+        else if (actor1.getClass() == Planta.class && actor2.getClass() == Hormiga.class)
+            choqueHormigaPlanta((Hormiga) actor2, (Planta) actor1);
 
 
-        if (actor1.getClass() == Hormiga.class && !((Hormiga) actor1).isChocada()) {
-            ((Hormiga) actor1).setChocada(true);
-            actor1.clearActions();
-            ((Hormiga) actor1).mover();
-            actor1.addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
-                @Override
-                public void run() {
-                    ((Hormiga) actor1).setChocada(false);
-                }
-            })));
+    }
+
+    private void choqueHormigaPlanta(Hormiga hormiga, Planta planta) {
+
+
+        if (!hormiga.isChocada()) {
+            hormiga.setChocada(true);
+            hormiga.clearActions();
+            hormiga.mover();
         }
 
-        if (actor2.getClass() == Hormiga.class && !((Hormiga) actor2).isChocada()) {
-            ((Hormiga) actor2).setChocada(true);
-            actor2.clearActions();
-            ((Hormiga) actor2).mover();
-            actor2.addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
-                @Override
-                public void run() {
-                    ((Hormiga) actor2).setChocada(false);
-                }
-            })));
+    }
+
+    private void choqueEntreHormigas(final Hormiga h1, final Hormiga h2) {
+
+
+        if (!h1.isChocada()) {
+            h1.setChocada(true);
+            h1.clearActions();
+            h1.mover();
+        }
+
+        if (!h2.isChocada()) {
+            h2.setChocada(true);
+            h2.clearActions();
+            h2.mover();
         }
     }
 
