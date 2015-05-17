@@ -104,7 +104,7 @@ public class PantallaHormiga implements Screen {
         }
     }
 
-    public void crearPlanta(int numero){
+    public void crearPlanta(int numero) {
         for (int i = 0; i < numero; i++) {
             Random ran = new Random();
             actores.insertElementAt(new Planta(ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)), posActores);
@@ -114,27 +114,27 @@ public class PantallaHormiga implements Screen {
     }
 
     public void detectarColision() {
-        for (int i = 0; i < PantallaHormiga.getPosActores(); i++) {
-            for (int j = 0; j < PantallaHormiga.getPosActores(); j++) {
-                if (actores.get(j) != actores.get(i) && (actores.get(j).getPolygon().contains(actores.get(i).getPolygon().getX(), actores.get(i).getPolygon().getY())
-                        || actores.get(j).getPolygon().contains(actores.get(i).getPolygon().getX() + actores.get(i).getTamano(), actores.get(i).getPolygon().getY())
-                        || actores.get(j).getPolygon().contains(actores.get(i).getPolygon().getX() + actores.get(i).getTamano(), actores.get(i).getPolygon().getY() + actores.get(i).getTamano())
-                        || actores.get(j).getPolygon().contains(actores.get(i).getPolygon().getX(), actores.get(i).getPolygon().getY() + actores.get(i).getTamano()))) {
-                    choque(actores.get(i), actores.get(j));
+        for (MyActor act1 : actores) {
+            for (MyActor act2 : actores) {
+                if (act1 != act2 && (act2.getPolygon().contains(act1.getPolygon().getX(), act1.getPolygon().getY())
+                        || act2.getPolygon().contains(act1.getPolygon().getX() + act1.getTamano(), act1.getPolygon().getY())
+                        || act2.getPolygon().contains(act1.getPolygon().getX() + act1.getTamano(), act1.getPolygon().getY() + act1.getTamano())
+                        || act2.getPolygon().contains(act1.getPolygon().getX(), act1.getPolygon().getY() + act1.getTamano()))) {
+                    choque(act1, act2);
                 }
             }
+
         }
     }
 
     public void choque(final MyActor actor1, final MyActor actor2) {
 
-        if (actor1.getClass() == Hormiga.class && actor2.getClass() == Hormiga.class)
+        if (actor1 instanceof Hormiga && actor2 instanceof Hormiga)
             choqueEntreHormigas((Hormiga) actor1, (Hormiga) actor2);
-        else if (actor1.getClass() == Hormiga.class && actor2.getClass() == Planta.class)
+        else if (actor1 instanceof Hormiga && actor2 instanceof Planta)
             choqueHormigaPlanta((Hormiga) actor1, (Planta) actor2);
-        else if (actor1.getClass() == Planta.class && actor2.getClass() == Hormiga.class)
+        else if (actor1 instanceof Planta && actor2 instanceof Hormiga)
             choqueHormigaPlanta((Hormiga) actor2, (Planta) actor1);
-
 
     }
 
@@ -169,7 +169,7 @@ public class PantallaHormiga implements Screen {
 
         // Se ejecuta cuando le das ESC (ordenador) y Atras (movil).
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-        //TODO cerrar aplicaciones
+            //TODO cerrar aplicaciones
         }
 
         Vector3 touchPoint = new Vector3();
