@@ -121,9 +121,11 @@ public class PantallaHormiga implements Screen {
 
     public void detectarColision() {
         for (MyActor act1 : actores) {
-
-
+            if (act1 instanceof Hormiga && ((Hormiga) act1).isChocada())
+                continue;
             for (MyActor act2 : actores) {
+                if (act2 instanceof Hormiga && ((Hormiga) act2).isChocada())
+                    continue;
                 if (act1 != act2 && (act2.getPolygon().contains(act1.getPolygon().getX(), act1.getPolygon().getY())
                         || act2.getPolygon().contains(act1.getPolygon().getX() + act1.getTamano(), act1.getPolygon().getY())
                         || act2.getPolygon().contains(act1.getPolygon().getX() + act1.getTamano(), act1.getPolygon().getY() + act1.getTamano())
