@@ -17,6 +17,8 @@ import java.util.Vector;
 public class PantallaHormiga implements Screen {
 
     private static final int HORMIGAS_POR_CLIC = 1;
+    private final int MARGEN_PLANTAS = 70;
+
     private Stage stage;
     private FillViewport viewport;
 
@@ -40,9 +42,9 @@ public class PantallaHormiga implements Screen {
         stage.addActor(background);
 
 
-        crearHormiga(2);
+        crearHormiga(10);
 
-        crearPlanta(5);
+        crearPlanta(10);
     }
 
     @Override
@@ -101,7 +103,8 @@ public class PantallaHormiga implements Screen {
             Random ran = new Random();
             actores.insertElementAt(new Hormiga(ran.nextInt(5) + 1, ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)), posActores);
             stage.addActor(actores.get(posActores));
-            ((Hormiga) actores.get(posActores)).mover();
+            actores.get(posActores).getPolygon().setPosition(actores.get(posActores).getX(), actores.get(posActores).getY());
+            ((Hormiga) actores.get(posActores)).mover(new Random().nextInt(360));
             posActores++;
         }
     }
@@ -109,7 +112,7 @@ public class PantallaHormiga implements Screen {
     public void crearPlanta(int numero) {
         for (int i = 0; i < numero; i++) {
             Random ran = new Random();
-            actores.insertElementAt(new Planta(ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)), posActores);
+            actores.insertElementAt(new Planta(ran.nextFloat() * (Assets.screenWidth - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS, ran.nextFloat() * (Assets.screenHeight - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS), posActores);
             stage.addActor(actores.get(posActores));
             actores.get(posActores).getPolygon().setPosition(actores.get(posActores).getX(), actores.get(posActores).getY());
             posActores++;
@@ -142,6 +145,7 @@ public class PantallaHormiga implements Screen {
         if (!hormiga.isChocada()) {
             hormiga.setChocada(true);
             hormiga.clearActions();
+            hormiga.invertDireccion();
         }
     }
 
@@ -149,13 +153,13 @@ public class PantallaHormiga implements Screen {
         if (!h1.isChocada()) {
             h1.setChocada(true);
             h1.clearActions();
-            h1.mover();
+            h1.mover(new Random().nextInt(360));
         }
 
         if (!h2.isChocada()) {
             h2.setChocada(true);
             h2.clearActions();
-            h2.mover();
+            h2.mover(new Random().nextInt(360));
         }
     }
 
@@ -177,7 +181,8 @@ public class PantallaHormiga implements Screen {
                 Random ran = new Random();
                 actores.insertElementAt(new Hormiga(ran.nextInt(5) + 1, touchPoint.x, touchPoint.y), posActores);
                 stage.addActor(actores.get(posActores));
-                ((Hormiga) actores.get(posActores)).mover();
+                actores.get(posActores).getPolygon().setPosition(actores.get(posActores).getX(), actores.get(posActores).getY());
+                ((Hormiga) actores.get(posActores)).mover(new Random().nextInt(360));
                 posActores++;
             }
         }

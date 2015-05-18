@@ -18,6 +18,8 @@ public class Hormiga extends MyActor {
     private Animation animation;
     private float stateTime;
 
+    private Random random = new Random();
+
     /**
      * ATRIBUTOS HORMIGA
      */
@@ -34,8 +36,8 @@ public class Hormiga extends MyActor {
 
     public static final int TAMANO = 30;
     private static final float VELOCIDAD = 200;
-    private static final float TIEMPO_GIRO = 0.1f;
-    public static final float TIEMPO_CHOQUE = 0.9f;
+    private static final float TIEMPO_GIRO = 0f;
+    public static final float TIEMPO_CHOQUE = 0.2f;
 
     /**
      * CONSTRUCTOR
@@ -80,7 +82,7 @@ public class Hormiga extends MyActor {
             else if (getY() >= Assets.screenHeight - Hormiga.TAMANO)
                 setY(Assets.screenHeight - Hormiga.TAMANO);
 
-            mover();
+            mover(randomAngle());
         }
 
     }
@@ -109,11 +111,35 @@ public class Hormiga extends MyActor {
         }
     }
 
-    public void mover() {
-        Random ran = new Random();
+    public double getAngle(float x, float y, float targetX, float targetY) {
+        float angle = (float) Math.toDegrees(Math.atan2((y + targetY) - y, (x + targetX) - x)) - 90;
 
-        int x = ran.nextInt(1000) - 499;
-        int y = ran.nextInt(1000) - 499;
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        return angle;
+    }
+
+    public float randomAngle() {
+        return random.nextInt(360);
+    }
+
+    public void invertDireccion() {
+        float angle = getRotation();
+        angle -= random.nextInt(50) + 166 - 90;
+
+        if (angle < 0)
+            angle += 360;
+
+        mover(angle % 360);
+    }
+
+    public void mover(float angulo) {
+        float x, y;
+
+        x = (float) (50 * Math.cos(angulo * Math.PI / 180));
+        y = (float) (50 * Math.sin(angulo * Math.PI / 180));
 
         float p = (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         float tiempo = p / VELOCIDAD;
@@ -130,16 +156,6 @@ public class Hormiga extends MyActor {
                 setChocada(false);
             }
         })));
-    }
-
-    public double getAngle(float x, float y, float targetX, float targetY) {
-        float angle = (float) Math.toDegrees(Math.atan2((y + targetY) - y, (x + targetX) - x)) - 90;
-
-        if (angle < 0) {
-            angle += 360;
-        }
-
-        return angle;
     }
 
     /**
