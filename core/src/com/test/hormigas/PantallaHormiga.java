@@ -16,7 +16,7 @@ import java.util.Vector;
 
 public class PantallaHormiga implements Screen {
 
-    private static final int HORMIGAS_POR_CLIC = 1;
+    private static final int HORMIGAS_POR_CLIC = 100;
     private final int MARGEN_PLANTAS = 70;
 
     private Stage stage;
@@ -121,6 +121,8 @@ public class PantallaHormiga implements Screen {
 
     public void detectarColision() {
         for (MyActor act1 : actores) {
+
+
             for (MyActor act2 : actores) {
                 if (act1 != act2 && (act2.getPolygon().contains(act1.getPolygon().getX(), act1.getPolygon().getY())
                         || act2.getPolygon().contains(act1.getPolygon().getX() + act1.getTamano(), act1.getPolygon().getY())
