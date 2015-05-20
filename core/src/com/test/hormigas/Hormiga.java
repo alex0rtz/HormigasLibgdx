@@ -1,6 +1,5 @@
 package com.test.hormigas;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
@@ -40,6 +39,7 @@ public class Hormiga extends MyActor {
     private static final float VELOCIDAD = 200;
     private static final float TIEMPO_GIRO = 0.15f;
     public static final float TIEMPO_CHOQUE = 0.2f;
+    private static final float TIEMPO_PELEA = 0.2f;
 
     /**
      * CONSTRUCTOR
@@ -131,11 +131,9 @@ public class Hormiga extends MyActor {
 
         float angle = (float) ((Math.atan2(coordsThis.x - coordsTarget.x, -(coordsThis.y - coordsTarget.y)) * 180.0d / Math.PI) + 90.0f);
 
-        if (angle < 0) {
+        if (angle < 0)
             angle += 360;
-        }
 
-        Gdx.app.log("Hormigas", "Angulo: " + angle);
         return angle;
     }
 
@@ -157,8 +155,39 @@ public class Hormiga extends MyActor {
 
         Vector2 coordsActor = actor.localToStageCoordinates(new Vector2(actor.getOriginX(), actor.getOriginY()));
 
-
         addAction(Actions.rotateTo((float) getAngle(coordsActor) - 90, TIEMPO_GIRO));
+
+        addAction(Actions.delay(TIEMPO_PELEA, Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                pelear();
+            }
+        })));
+    }
+
+    public void pelear() {
+
+        float x = (float) (7 * Math.cos((getRotation() - 90) * Math.PI / 180));
+        float y = (float) (7 * Math.sin((getRotation() - 90) * Math.PI / 180));
+
+        addAction(Actions.sequence(
+                        Actions.repeat(5,
+                                Actions.sequence(
+                                        Actions.moveBy(x, y, 0.2f),
+                                        Actions.moveBy(-x, -y, 0.2f)
+
+                                )
+                        ),
+                        Actions.run(new Runnable() {
+                            @Override
+                            public void run() {
+                                invertDireccion();
+                            }
+                        })
+                )
+        );
+
+
     }
 
     public void mover(float angulo) {

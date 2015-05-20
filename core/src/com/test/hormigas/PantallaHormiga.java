@@ -42,9 +42,9 @@ public class PantallaHormiga implements Screen {
         stage.addActor(background);
 
 
-        //crearHormiga(1);
+        crearHormiga(0);
 
-        //crearPlanta(1);
+        crearPlanta(0);
     }
 
     @Override
