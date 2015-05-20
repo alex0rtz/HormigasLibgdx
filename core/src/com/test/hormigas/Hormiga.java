@@ -29,6 +29,8 @@ public class Hormiga extends MyActor {
 
     private boolean chocada = true;
 
+    private boolean pelearse = false;
+
     public static final int VERDE = 1;
     public static final int NARANJA = 2;
     public static final int ROJA = 3;
@@ -83,7 +85,7 @@ public class Hormiga extends MyActor {
         getPolygon().setRotation(getRotation());
 
         // Comprueba si las hormigas están entre la pantalla y cuando llegan al extremos chocan y cambian de dirección.
-        if (getX() < 0 || getX() > Assets.screenWidth - Hormiga.TAMANO || getY() < 0 || getY() > Assets.screenHeight - Hormiga.TAMANO) {
+        if (!pelearse && (getX() < 0 || getX() > Assets.screenWidth - Hormiga.TAMANO || getY() < 0 || getY() > Assets.screenHeight - Hormiga.TAMANO)) {
             clearActions();
 
             if (getX() <= 0)
@@ -160,6 +162,7 @@ public class Hormiga extends MyActor {
         addAction(Actions.delay(TIEMPO_PELEA, Actions.run(new Runnable() {
             @Override
             public void run() {
+                pelearse = true;
                 pelear();
             }
         })));
@@ -181,6 +184,7 @@ public class Hormiga extends MyActor {
                         Actions.run(new Runnable() {
                             @Override
                             public void run() {
+                                pelearse = false;
                                 invertDireccion();
                             }
                         })
