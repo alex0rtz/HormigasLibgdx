@@ -13,6 +13,31 @@ public class Hormiga extends MyActor {
     // https://github.com/JavadocMD/JackJaneRace/blob/master/actionTest/src/com/javadocmd/actionTest/actor/RunnerActor.java
 
     /**
+     * Las hormigas pueden comer plantas, moverse, regar plantas, pelearse y reproducirse.
+     *
+     * Ganan energia cada vez que comen una planta. Cuando una planta ha sido suficientemente regada,
+     * por la primera hormiga que pase junto a ella.
+     * No hay limite en la cantidad de plantas que pueden comer.
+     *
+     * Pierden energia cada vez que se mueven, riegan, se pelean o se reproducen.
+     * Si pierde toda la energia muere.
+     */
+    private int energia;
+
+    /**
+     * Las hormigas pueden ser rojas (agresivas, no riegan las plantas), naranjas (equilibradas, que tienden a atacar), verdes (riegan las plantas y no pelean),
+     * azules (equilibradas, que tienden a reproducirse) y rosas (equilibradas que tienden a regar).
+     */
+
+    private int tipo;
+
+    /**
+     * En un combate la hormiga ganadora se quedará con la mitad de la energía acumulada por la perdedora.
+     * Cuantas más veces salga vencedora una hormiga, más probabilidades de salir victoriosa de la siguiente.
+     */
+    private int victorias = 0;
+
+    /**
      * ATRIBUTOS LIBGDX
      */
 
@@ -24,8 +49,6 @@ public class Hormiga extends MyActor {
     /**
      * ATRIBUTOS HORMIGA
      */
-
-    private int tipo;
 
     private boolean chocada = true;
 

@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Planta extends MyActor {
 
+    /**
+     * Van apareciendo aleatoriamente. Tienen que ser regadas para poder ser comidas.
+     */
+
     private Texture texture;
 
     public static final float TAMANO = Hormiga.TAMANO * 1.5f;

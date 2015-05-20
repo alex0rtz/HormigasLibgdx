@@ -148,7 +148,7 @@ public class PantallaHormiga implements Screen {
         if (!hormiga.isChocada()) {
             hormiga.setChocada(true);
             hormiga.clearActions();
-            hormiga.invertDireccion();
+            hormiga.mirar(planta);
         }
     }
 
@@ -156,14 +156,12 @@ public class PantallaHormiga implements Screen {
         if (!h1.isChocada()) {
             h1.setChocada(true);
             h1.clearActions();
-            //h1.mover(new Random().nextInt(360));
             h1.mirar(h2);
         }
 
         if (!h2.isChocada()) {
             h2.setChocada(true);
             h2.clearActions();
-            //h2.mover(new Random().nextInt(360));
             h2.mirar(h1);
         }
     }
