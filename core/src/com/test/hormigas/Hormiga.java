@@ -1,7 +1,9 @@
 package com.test.hormigas;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
@@ -26,7 +28,7 @@ public class Hormiga extends MyActor {
 
     private int tipo;
 
-    private boolean chocada = false;
+    private boolean chocada = true;
 
     public static final int VERDE = 1;
     public static final int NARANJA = 2;
@@ -34,9 +36,9 @@ public class Hormiga extends MyActor {
     public static final int AZUL = 4;
     public static final int ROSA = 5;
 
-    public static final int TAMANO = 30;
+    public static final int TAMANO = 35;
     private static final float VELOCIDAD = 200;
-    private static final float TIEMPO_GIRO = 0f;
+    private static final float TIEMPO_GIRO = 0.15f;
     public static final float TIEMPO_CHOQUE = 0.2f;
 
     /**
@@ -50,6 +52,17 @@ public class Hormiga extends MyActor {
         this.tipo = tipo;
         animation = getAnimation();
         setOrigin(TAMANO / 2, TAMANO / 2);
+
+        getPolygon().setPosition(getX(), getY());
+
+        moverInicial(getRandomAngle());
+
+        addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE * 10, Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                setChocada(false);
+            }
+        })));
     }
 
     /**
@@ -82,7 +95,7 @@ public class Hormiga extends MyActor {
             else if (getY() >= Assets.screenHeight - Hormiga.TAMANO)
                 setY(Assets.screenHeight - Hormiga.TAMANO);
 
-            mover(randomAngle());
+            mover(getRandomAngle());
         }
 
     }
@@ -111,17 +124,22 @@ public class Hormiga extends MyActor {
         }
     }
 
-    public double getAngle(float x, float y, float targetX, float targetY) {
-        float angle = (float) Math.toDegrees(Math.atan2((y + targetY) - y, (x + targetX) - x)) - 90;
+
+    public double getAngle(Vector2 coordsTarget) {
+
+        Vector2 coordsThis = localToStageCoordinates(new Vector2(getOriginX(), getOriginY()));
+
+        float angle = (float) ((Math.atan2(coordsThis.x - coordsTarget.x, -(coordsThis.y - coordsTarget.y)) * 180.0d / Math.PI) + 90.0f);
 
         if (angle < 0) {
             angle += 360;
         }
 
+        Gdx.app.log("Hormigas", "Angulo: " + angle);
         return angle;
     }
 
-    public float randomAngle() {
+    public float getRandomAngle() {
         return random.nextInt(360);
     }
 
@@ -135,20 +153,17 @@ public class Hormiga extends MyActor {
         mover(angle % 360);
     }
 
+    public void mirar(Actor actor) {
+
+        Vector2 coordsActor = actor.localToStageCoordinates(new Vector2(actor.getOriginX(), actor.getOriginY()));
+
+
+        addAction(Actions.rotateTo((float) getAngle(coordsActor) - 90, TIEMPO_GIRO));
+    }
+
     public void mover(float angulo) {
-        float x, y;
 
-        x = (float) (50 * Math.cos(angulo * Math.PI / 180));
-        y = (float) (50 * Math.sin(angulo * Math.PI / 180));
-
-        float p = (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        float tiempo = p / VELOCIDAD;
-
-        addAction(Actions.forever(Actions.parallel(
-                        Actions.moveBy(x, y, tiempo),
-                        Actions.rotateTo((float) getAngle(getX(), getY(), x, y), TIEMPO_GIRO)
-                )
-        ));
+        moverInicial(angulo);
 
         addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
             @Override
@@ -156,6 +171,24 @@ public class Hormiga extends MyActor {
                 setChocada(false);
             }
         })));
+    }
+
+
+    public void moverInicial(float angulo) {
+
+        float x = (float) (100 * Math.cos(angulo * Math.PI / 180));
+        float y = (float) (100 * Math.sin(angulo * Math.PI / 180));
+
+        float p = (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        float tiempo = p / VELOCIDAD;
+
+        addAction(Actions.forever(
+                Actions.moveBy(x, y, tiempo)
+        ));
+
+        addAction(
+                Actions.rotateTo(angulo - 90, TIEMPO_GIRO)
+        );
     }
 
     /**
