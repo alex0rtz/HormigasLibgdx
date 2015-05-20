@@ -29,7 +29,7 @@ public class Hormiga extends MyActor {
 
     private boolean chocada = true;
 
-    private boolean pelearse = false;
+    private boolean peleando = false;
 
     public static final int VERDE = 1;
     public static final int NARANJA = 2;
@@ -41,7 +41,8 @@ public class Hormiga extends MyActor {
     private static final float VELOCIDAD = 200;
     private static final float TIEMPO_GIRO = 0.15f;
     public static final float TIEMPO_CHOQUE = 0.2f;
-    private static final float TIEMPO_PELEA = 0.2f;
+    private static final float TIEMPO_PELEA = 0.125f;
+    private static final int IMPACTOS_PELEA = 6;
 
     /**
      * CONSTRUCTOR
@@ -85,7 +86,7 @@ public class Hormiga extends MyActor {
         getPolygon().setRotation(getRotation());
 
         // Comprueba si las hormigas están entre la pantalla y cuando llegan al extremos chocan y cambian de dirección.
-        if (!pelearse && (getX() < 0 || getX() > Assets.screenWidth - Hormiga.TAMANO || getY() < 0 || getY() > Assets.screenHeight - Hormiga.TAMANO)) {
+        if (!peleando && (getX() < 0 || getX() > Assets.screenWidth - Hormiga.TAMANO || getY() < 0 || getY() > Assets.screenHeight - Hormiga.TAMANO)) {
             clearActions();
 
             if (getX() <= 0)
@@ -159,10 +160,10 @@ public class Hormiga extends MyActor {
 
         addAction(Actions.rotateTo((float) getAngle(coordsActor) - 90, TIEMPO_GIRO));
 
-        addAction(Actions.delay(TIEMPO_PELEA, Actions.run(new Runnable() {
+        addAction(Actions.delay(TIEMPO_GIRO, Actions.run(new Runnable() {
             @Override
             public void run() {
-                pelearse = true;
+                peleando = true;
                 pelear();
             }
         })));
@@ -174,17 +175,17 @@ public class Hormiga extends MyActor {
         float y = (float) (7 * Math.sin((getRotation() - 90) * Math.PI / 180));
 
         addAction(Actions.sequence(
-                        Actions.repeat(5,
+                        Actions.repeat(IMPACTOS_PELEA,
                                 Actions.sequence(
-                                        Actions.moveBy(x, y, 0.2f),
-                                        Actions.moveBy(-x, -y, 0.2f)
+                                        Actions.moveBy(x, y, TIEMPO_PELEA),
+                                        Actions.moveBy(-x, -y, TIEMPO_PELEA)
 
                                 )
                         ),
                         Actions.run(new Runnable() {
                             @Override
                             public void run() {
-                                pelearse = false;
+                                peleando = false;
                                 invertDireccion();
                             }
                         })
