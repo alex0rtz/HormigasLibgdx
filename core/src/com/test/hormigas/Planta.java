@@ -11,6 +11,11 @@ public class Planta extends MyActor {
      */
 
     private Texture texture;
+    private int energia = 0;
+
+    private boolean puede_comerse = false;
+
+    private final int ENERGIA_MAX = 4;
 
     public static final float TAMANO = Hormiga.TAMANO * 1.5f;
 
@@ -27,5 +32,35 @@ public class Planta extends MyActor {
     @Override
     public void draw(Batch batch, float alpha) {
         batch.draw(Assets.texturePlanta, getX(), getY(), TAMANO, TAMANO);
+    }
+
+    public void regar() {
+        energia += 2;
+        if (energia == ENERGIA_MAX)
+            puede_comerse = true;
+    }
+
+    public void comer() {
+        energia--;
+    }
+
+    public boolean estaViva() {
+        return energia > 0;
+    }
+
+    /**
+     * GETTERS AND SETTERS
+     */
+
+    public int getEnergia() {
+        return energia;
+    }
+
+    public void setEnergia(int energia) {
+        this.energia = energia;
+    }
+
+    public boolean getComestible() {
+        return puede_comerse;
     }
 }

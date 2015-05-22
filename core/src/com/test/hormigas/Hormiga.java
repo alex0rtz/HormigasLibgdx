@@ -76,6 +76,7 @@ public class Hormiga extends MyActor {
         setBounds(posX, posY, TAMANO, TAMANO);
 
         this.tipo = tipo;
+        energiaInicial();
         animation = getAnimation();
         setOrigin(TAMANO / 2, TAMANO / 2);
 
@@ -149,7 +150,6 @@ public class Hormiga extends MyActor {
                 return Assets.animationRosa;
         }
     }
-
 
     public double getAngle(Vector2 coordsTarget) {
 
@@ -246,6 +246,31 @@ public class Hormiga extends MyActor {
         addAction(
                 Actions.rotateTo(angulo - 90, TIEMPO_GIRO)
         );
+    }
+
+    public void energiaInicial() {
+        switch (tipo) {
+            case VERDE:
+                energia = 10;
+                break;
+            case NARANJA:
+            case AZUL:
+            case ROSA:
+                energia = 7;
+                break;
+            case ROJA:
+                energia = 5;
+                break;
+
+        }
+    }
+
+    public void regar() {
+        energia--;
+    }
+
+    public void comer() {
+        energia += 2;
     }
 
     /**

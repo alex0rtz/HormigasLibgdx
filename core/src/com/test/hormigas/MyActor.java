@@ -20,6 +20,12 @@ public class MyActor extends Actor {
         polygon.setOrigin(bounds.width / 2, bounds.height / 2);
     }
 
+    @Override
+    public boolean remove() {
+        polygon = null;
+        return super.remove();
+    }
+
     public Polygon getPolygon() {
         return polygon;
     }

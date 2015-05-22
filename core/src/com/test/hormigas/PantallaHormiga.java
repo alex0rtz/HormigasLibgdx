@@ -149,6 +149,18 @@ public class PantallaHormiga implements Screen {
             hormiga.setChocada(true);
             hormiga.clearActions();
             hormiga.mirar(planta);
+
+            if (!planta.getComestible() && hormiga.getTipo() != Hormiga.ROJA) {
+                planta.regar();
+                hormiga.regar();
+            } else if (planta.getComestible()) {
+                planta.comer();
+                hormiga.comer();
+                if (!planta.estaViva()) {
+                    actores.remove(planta);
+                    planta.remove();
+                }
+            }
         }
     }
 
@@ -157,6 +169,14 @@ public class PantallaHormiga implements Screen {
             h1.setChocada(true);
             h1.clearActions();
             h1.mirar(h2);
+
+            switch (h1.getTipo()) {
+                case Hormiga.VERDE:
+                case Hormiga.NARANJA:
+                case Hormiga.AZUL:
+                case Hormiga.ROSA:
+                    break;
+            }
         }
 
         if (!h2.isChocada()) {
