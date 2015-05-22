@@ -51,7 +51,6 @@ public class Hormiga extends MyActor {
      */
 
     private boolean chocada = true;
-
     private boolean peleando = false;
 
     public static final int VERDE = 1;
@@ -62,10 +61,10 @@ public class Hormiga extends MyActor {
 
     public static final int TAMANO = 35;
     private static final float VELOCIDAD = 200;
-    private static final float TIEMPO_GIRO = 0.15f;
+    public static final float TIEMPO_GIRO = 0.15f;
     public static final float TIEMPO_CHOQUE = 0.2f;
-    private static final float TIEMPO_PELEA = 0.125f;
-    private static final int IMPACTOS_PELEA = 6;
+    public static final float TIEMPO_PELEA = 0.125f;
+    public static final int IMPACTOS_PELEA = 6;
 
     /**
      * CONSTRUCTOR
@@ -183,37 +182,39 @@ public class Hormiga extends MyActor {
 
         addAction(Actions.rotateTo((float) getAngle(coordsActor) - 90, TIEMPO_GIRO));
 
-        addAction(Actions.delay(TIEMPO_GIRO, Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                peleando = true;
-                pelear();
-            }
-        })));
     }
 
     public void pelear() {
 
-        float x = (float) (7 * Math.cos((getRotation() - 90) * Math.PI / 180));
-        float y = (float) (7 * Math.sin((getRotation() - 90) * Math.PI / 180));
+        setPeleando(true);
 
-        addAction(Actions.sequence(
-                        Actions.repeat(IMPACTOS_PELEA,
-                                Actions.sequence(
-                                        Actions.moveBy(x, y, TIEMPO_PELEA),
-                                        Actions.moveBy(-x, -y, TIEMPO_PELEA)
 
-                                )
-                        ),
-                        Actions.run(new Runnable() {
-                            @Override
-                            public void run() {
-                                peleando = false;
-                                invertDireccion();
-                            }
-                        })
-                )
-        );
+        addAction(Actions.delay(Hormiga.TIEMPO_GIRO, Actions.run(new Runnable() {
+            @Override
+            public void run() {
+
+                float x = (float) (7 * Math.cos((getRotation() - 90) * Math.PI / 180));
+                float y = (float) (7 * Math.sin((getRotation() - 90) * Math.PI / 180));
+
+                addAction(Actions.sequence(
+                                Actions.repeat(IMPACTOS_PELEA,
+                                        Actions.sequence(
+                                                Actions.moveBy(x, y, TIEMPO_PELEA),
+                                                Actions.moveBy(-x, -y, TIEMPO_PELEA)
+
+                                        )
+                                ),
+                                Actions.run(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        peleando = false;
+                                        invertDireccion();
+                                    }
+                                })
+                        )
+                );
+            }
+        })));
 
 
     }
@@ -286,5 +287,14 @@ public class Hormiga extends MyActor {
 
     public void setChocada(boolean chocada) {
         this.chocada = chocada;
+    }
+
+
+    public void setPeleando(boolean peleando) {
+        this.peleando = peleando;
+    }
+
+    public boolean isPeleando() {
+        return peleando;
     }
 }

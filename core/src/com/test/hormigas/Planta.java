@@ -42,6 +42,9 @@ public class Planta extends MyActor {
 
     public void comer() {
         energia--;
+
+        if (energia <= 0)
+            puede_comerse = false;
     }
 
     public boolean estaViva() {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FillViewport;
@@ -25,12 +26,15 @@ public class PantallaHormiga implements Screen {
     private SpriteBatch stageBatch;
 
     private static Vector<MyActor> actores;
-    private static int posActores = 0;
+    private static Vector<MyActor> pendientesEliminar;
+
+    private Random ran = new Random();
 
     public PantallaHormiga(HormigasGame game) {
         stageBatch = new SpriteBatch();
         viewport = new FillViewport(Assets.screenWidth, Assets.screenHeight);
         actores = new Vector<>();
+        pendientesEliminar = new Vector<>();
 
         stage = new Stage(viewport, stageBatch);
         Gdx.input.setInputProcessor(stage);
@@ -42,9 +46,9 @@ public class PantallaHormiga implements Screen {
         stage.addActor(background);
 
 
-        crearHormiga(0);
+        crearHormigas(0);
 
-        crearPlanta(0);
+        crearPlantas(0);
     }
 
     @Override
@@ -98,27 +102,41 @@ public class PantallaHormiga implements Screen {
      * ACCIONES EN PANTALLA
      */
 
-    public void crearHormiga(int numero) {
+    public void crearHormiga(Vector2 pos) {
+        Hormiga h = new Hormiga(ran.nextInt(5) + 1, pos.x, pos.y);
+        actores.add(h);
+        stage.addActor(h);
+        h.getPolygon().setPosition(h.getX(), h.getY());
+    }
+
+    public void crearPlanta(Vector2 pos) {
+        Planta p = new Planta(pos.x, pos.y);
+        actores.add(p);
+        stage.addActor(p);
+        p.getPolygon().setPosition(p.getX(), p.getY());
+    }
+
+    public void crearHormigas(int numero) {
         for (int i = 0; i < numero; i++) {
-            Random ran = new Random();
-            actores.insertElementAt(new Hormiga(ran.nextInt(5) + 1, ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)), posActores);
-            stage.addActor(actores.get(posActores));
-            actores.get(posActores).getPolygon().setPosition(actores.get(posActores).getX(), actores.get(posActores).getY());
-            posActores++;
+            crearHormiga(new Vector2(ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)));
         }
     }
 
-    public void crearPlanta(int numero) {
+    public void crearPlantas(int numero) {
         for (int i = 0; i < numero; i++) {
-            Random ran = new Random();
-            actores.insertElementAt(new Planta(ran.nextFloat() * (Assets.screenWidth - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS, ran.nextFloat() * (Assets.screenHeight - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS), posActores);
-            stage.addActor(actores.get(posActores));
-            actores.get(posActores).getPolygon().setPosition(actores.get(posActores).getX(), actores.get(posActores).getY());
-            posActores++;
+            crearPlanta(new Vector2(ran.nextFloat() * (Assets.screenWidth - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS, ran.nextFloat() * (Assets.screenHeight - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS));
         }
     }
 
     public void detectarColision() {
+
+        for (MyActor act : pendientesEliminar) {
+            actores.remove(act);
+            act.remove();
+        }
+
+        pendientesEliminar.clear();
+
         for (MyActor act1 : actores) {
             if (act1 instanceof Hormiga && ((Hormiga) act1).isChocada())
                 continue;
@@ -144,22 +162,37 @@ public class PantallaHormiga implements Screen {
             choqueHormigaPlanta((Hormiga) actor2, (Planta) actor1);
     }
 
-    private void choqueHormigaPlanta(Hormiga hormiga, Planta planta) {
+    private void choqueHormigaPlanta(final Hormiga hormiga, final Planta planta) {
         if (!hormiga.isChocada()) {
             hormiga.setChocada(true);
             hormiga.clearActions();
             hormiga.mirar(planta);
 
-            if (!planta.getComestible() && hormiga.getTipo() != Hormiga.ROJA) {
-                planta.regar();
-                hormiga.regar();
-            } else if (planta.getComestible()) {
-                planta.comer();
-                hormiga.comer();
-                if (!planta.estaViva()) {
-                    actores.remove(planta);
-                    planta.remove();
+
+            //TODO Hacer que no puedan comer cuando ya no hay comida
+            if (hormiga.getTipo() != Hormiga.ROJA || planta.getComestible()) {
+                hormiga.pelear();
+
+                if (!planta.getComestible()) {
+                    planta.regar();
+                    hormiga.regar();
+                } else {
+                    planta.comer();
+                    hormiga.comer();
+                    if (!planta.estaViva()) {
+                        stage.addAction(Actions.delay(Hormiga.TIEMPO_PELEA * Hormiga.IMPACTOS_PELEA * 2,
+                                        Actions.run(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                pendientesEliminar.add(planta);
+                                            }
+                                        })
+                                )
+                        );
+                    }
                 }
+            } else {
+                hormiga.invertDireccion();
             }
         }
     }
@@ -169,6 +202,7 @@ public class PantallaHormiga implements Screen {
             h1.setChocada(true);
             h1.clearActions();
             h1.mirar(h2);
+            h1.pelear();
 
             switch (h1.getTipo()) {
                 case Hormiga.VERDE:
@@ -183,6 +217,7 @@ public class PantallaHormiga implements Screen {
             h2.setChocada(true);
             h2.clearActions();
             h2.mirar(h1);
+            h2.pelear();
         }
     }
 
@@ -202,10 +237,10 @@ public class PantallaHormiga implements Screen {
             //TODO añadir hormiga
             for (int i = 0; i < HORMIGAS_POR_CLIC; i++) {
                 Random ran = new Random();
-                actores.insertElementAt(new Hormiga(ran.nextInt(5) + 1, touchPoint.x, touchPoint.y), posActores);
-                stage.addActor(actores.get(posActores));
-                actores.get(posActores).getPolygon().setPosition(actores.get(posActores).getX(), actores.get(posActores).getY());
-                posActores++;
+                Hormiga h = new Hormiga(ran.nextInt(5) + 1, touchPoint.x, touchPoint.y);
+                actores.add(h);
+                stage.addActor(h);
+                h.getPolygon().setPosition(h.getX(), h.getY());
             }
         }
 
@@ -213,20 +248,16 @@ public class PantallaHormiga implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P) || (Gdx.input.justTouched() && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
 
             //TODO añadir Planta
-            actores.insertElementAt(new Planta(touchPoint.x - Planta.TAMANO / 2, touchPoint.y - Planta.TAMANO / 2), posActores);
-            stage.addActor(actores.get(posActores));
-            actores.get(posActores).getPolygon().setPosition(actores.get(posActores).getX(), actores.get(posActores).getY());
-            posActores++;
+            Planta p = new Planta(touchPoint.x - Planta.TAMANO / 2, touchPoint.y - Planta.TAMANO / 2);
+            actores.add(p);
+            stage.addActor(p);
+            p.getPolygon().setPosition(p.getX(), p.getY());
         }
     }
 
     /**
      * GETTERS AND SETTERS
      */
-
-    public static int getPosActores() {
-        return posActores;
-    }
 
     public static Vector<MyActor> getActores() {
         return actores;
