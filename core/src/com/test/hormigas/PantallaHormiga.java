@@ -45,9 +45,11 @@ public class PantallaHormiga implements Screen {
 
         stage.addActor(background);
 
-
-        crearHormigas(0);
-
+        crearHormigas(1, 2);
+        crearHormigas(2, 2);
+        crearHormigas(3, 2);
+        crearHormigas(4, 2);
+        crearHormigas(5, 2);
         crearPlantas(0);
     }
 
@@ -71,6 +73,7 @@ public class PantallaHormiga implements Screen {
         stage.act(delta);
         processInput();
         detectarColision();
+        Gdx.app.log("Numero de hormigas:", "" + actores.size());
     }
 
     public void draw() {
@@ -103,10 +106,33 @@ public class PantallaHormiga implements Screen {
      */
 
     public void crearHormiga(Vector2 pos) {
-        Hormiga h = new Hormiga(ran.nextInt(5) + 1, pos.x, pos.y);
+        crearHormiga(ran.nextInt(5) + 1, pos);
+    }
+
+    public void crearHormiga(int tipo, Vector2 pos) {
+        Hormiga h = new Hormiga(tipo, pos.x, pos.y);
+        h.setZIndex(10);
         actores.add(h);
         stage.addActor(h);
+        h.setZIndex(500);
         h.getPolygon().setPosition(h.getX(), h.getY());
+    }
+
+    public void crearHuevo(final int tipo, Vector2 pos) {
+        final Huevo huevo = new Huevo(tipo);
+        huevo.setPosition(pos.x, pos.y);
+        stage.addActor(huevo);
+        huevo.setZIndex(1);
+        stage.addAction(Actions.delay(Huevo.TIEMPO_ECLOSION,
+                        Actions.run(new Runnable() {
+                            @Override
+                            public void run() {
+                                crearHormiga(tipo, new Vector2(huevo.getX(), huevo.getY()));
+                                huevo.remove();
+                            }
+                        })
+                )
+        );
     }
 
     public void crearPlanta(Vector2 pos) {
@@ -116,9 +142,9 @@ public class PantallaHormiga implements Screen {
         p.getPolygon().setPosition(p.getX(), p.getY());
     }
 
-    public void crearHormigas(int numero) {
+    public void crearHormigas(int tipo, int numero) {
         for (int i = 0; i < numero; i++) {
-            crearHormiga(new Vector2(ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)));
+            crearHormiga(tipo, new Vector2(ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)));
         }
     }
 
@@ -163,6 +189,11 @@ public class PantallaHormiga implements Screen {
     }
 
     private void choqueHormigaPlanta(final Hormiga hormiga, final Planta planta) {
+        if (!hormiga.isEsAdulta()) {
+            hormiga.seguirCreciendo();
+            return;
+        }
+
         if (!hormiga.isChocada()) {
             hormiga.setChocada(true);
             hormiga.clearActions();
@@ -199,26 +230,62 @@ public class PantallaHormiga implements Screen {
     }
 
     private void choqueEntreHormigas(final Hormiga h1, final Hormiga h2) {
-        if (!h1.isChocada()) {
-            h1.setChocada(true);
-            h1.clearActions();
-            h1.mirar(h2);
-            h1.pelear();
 
-            switch (h1.getTipo()) {
-                case Hormiga.VERDE:
-                case Hormiga.NARANJA:
-                case Hormiga.AZUL:
-                case Hormiga.ROSA:
-                    break;
+        if (!h1.isEsAdulta() || !h2.isEsAdulta()) {
+            if (!h1.isEsAdulta()) {
+                h1.seguirCreciendo();
+                h2.invertDireccion();
+            } else if (!h2.isEsAdulta()) {
+                h2.seguirCreciendo();
+                h1.invertDireccion();
+            } else {
+                h1.seguirCreciendo();
+                h2.seguirCreciendo();
             }
+            return;
         }
 
-        if (!h2.isChocada()) {
+        if (h1.isChocada() || h2.isChocada())
+            return;
+        else {
+            h1.setChocada(true);
             h2.setChocada(true);
+            h1.clearActions();
             h2.clearActions();
+        }
+
+        // Reproducirse
+        if (h1.getTipo() == h2.getTipo()) {
+            h1.reproducir();
+            h2.reproducir();
+            h1.mirar(h2);
             h2.mirar(h1);
+            h1.pelear();
             h2.pelear();
+
+            Vector2 centroH1 = h1.localToStageCoordinates(new Vector2(h1.getOriginX(), h1.getOriginY()));
+            Vector2 centroH2 = h2.localToStageCoordinates(new Vector2(h2.getOriginX(), h2.getOriginY()));
+
+            final Vector2 centroHuevo = new Vector2((centroH1.x + centroH2.x) / 2, (centroH1.y + centroH2.y) / 2);
+            stage.addAction(Actions.delay(Hormiga.TIEMPO_PELEA * Hormiga.IMPACTOS_PELEA * 2,
+                            Actions.run(new Runnable() {
+                                @Override
+                                public void run() {
+                                    crearHuevo(h1.getTipo(), centroHuevo);
+                                }
+                            })
+                    )
+            );
+
+            return;
+        } /* Pelearse */ else {
+            h1.mirar(h2);
+            h2.mirar(h1);
+            h1.pelear();
+            h2.pelear();
+
+
+
         }
     }
 

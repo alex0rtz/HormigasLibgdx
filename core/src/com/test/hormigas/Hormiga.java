@@ -14,11 +14,11 @@ public class Hormiga extends MyActor {
 
     /**
      * Las hormigas pueden comer plantas, moverse, regar plantas, pelearse y reproducirse.
-     *
+     * <p/>
      * Ganan energia cada vez que comen una planta. Cuando una planta ha sido suficientemente regada,
      * por la primera hormiga que pase junto a ella.
      * No hay limite en la cantidad de plantas que pueden comer.
-     *
+     * <p/>
      * Pierden energia cada vez que se mueven, riegan, se pelean o se reproducen.
      * Si pierde toda la energia muere.
      */
@@ -52,6 +52,9 @@ public class Hormiga extends MyActor {
 
     private boolean chocada = true;
     private boolean peleando = false;
+    private boolean esAdulta = false;
+
+    private float tiempoCrecimiento = 0;
 
     public static final int VERDE = 1;
     public static final int NARANJA = 2;
@@ -65,6 +68,7 @@ public class Hormiga extends MyActor {
     public static final float TIEMPO_CHOQUE = 0.2f;
     public static final float TIEMPO_PELEA = 0.125f;
     public static final int IMPACTOS_PELEA = 6;
+    public static final float TIEMPO_CRECIMIENTO = 5;
 
     /**
      * CONSTRUCTOR
@@ -78,8 +82,10 @@ public class Hormiga extends MyActor {
         energiaInicial();
         animation = getAnimation();
         setOrigin(TAMANO / 2, TAMANO / 2);
+        setScale(0.1f);
 
         getPolygon().setPosition(getX(), getY());
+        getPolygon().setScale(getScaleX(), getScaleY());
 
         moverInicial(getRandomAngle());
 
@@ -89,6 +95,9 @@ public class Hormiga extends MyActor {
                 setChocada(false);
             }
         })));
+
+        crecer(TIEMPO_CRECIMIENTO);
+
     }
 
     /**
@@ -97,7 +106,7 @@ public class Hormiga extends MyActor {
 
     @Override
     public void draw(Batch batch, float alpha) {
-        batch.draw(animation.getKeyFrame(stateTime, true), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), 1, 1, getRotation());
+        batch.draw(animation.getKeyFrame(stateTime, true), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
     }
 
     @Override
@@ -105,12 +114,22 @@ public class Hormiga extends MyActor {
         super.act(delta);
         stateTime += delta;
 
+        if (!esAdulta) {
+
+            getPolygon().setScale(getScaleX(), getScaleY());
+
+            tiempoCrecimiento += delta;
+            if (tiempoCrecimiento >= TIEMPO_CRECIMIENTO)
+                esAdulta = true;
+        }
+
         getPolygon().setPosition(getX(), getY());
         getPolygon().setRotation(getRotation());
 
         // Comprueba si las hormigas están entre la pantalla y cuando llegan al extremos chocan y cambian de dirección.
         if (!peleando && (getX() < 0 || getX() > Assets.screenWidth - Hormiga.TAMANO || getY() < 0 || getY() > Assets.screenHeight - Hormiga.TAMANO)) {
             clearActions();
+
 
             if (getX() <= 0)
                 setX(0);
@@ -121,7 +140,10 @@ public class Hormiga extends MyActor {
             else if (getY() >= Assets.screenHeight - Hormiga.TAMANO)
                 setY(Assets.screenHeight - Hormiga.TAMANO);
 
-            mover(getRandomAngle());
+            if (!esAdulta)
+                seguirCreciendo();
+            else
+                mover(getRandomAngle());
         }
 
     }
@@ -266,12 +288,27 @@ public class Hormiga extends MyActor {
         }
     }
 
+    public void seguirCreciendo() {
+        chocada = true;
+        clearActions();
+        invertDireccion();
+        crecer(TIEMPO_CRECIMIENTO - tiempoCrecimiento);
+    }
+
+    public void crecer(float tiempo) {
+        addAction(Actions.scaleTo(1.0f, 1.0f, tiempo));
+    }
+
     public void regar() {
         energia--;
     }
 
     public void comer() {
         energia += 2;
+    }
+
+    public void reproducir() {
+        energia--;
     }
 
     /**
@@ -296,5 +333,13 @@ public class Hormiga extends MyActor {
 
     public boolean isPeleando() {
         return peleando;
+    }
+
+    public boolean isEsAdulta() {
+        return esAdulta;
+    }
+
+    public void setEsAdulta(boolean esAdulta) {
+        this.esAdulta = esAdulta;
     }
 }

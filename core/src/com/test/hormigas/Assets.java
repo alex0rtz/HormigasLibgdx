@@ -17,6 +17,12 @@ public class Assets {
     private static Texture textureAzul;
     private static Texture textureRosa;
 
+    public static Texture textureHuevoVerde;
+    public static Texture textureHuevoAzul;
+    public static Texture textureHuevoRoja;
+    public static Texture textureHuevoNaranja;
+    public static Texture textureHuevoRosa;
+
     public static Texture texturePlanta;
 
     public static Animation animationVerde;
@@ -29,7 +35,18 @@ public class Assets {
     public static final float screenHeight = 720;
 
     public static void loadtexture(){
+        // Textura huevo
+        textureHuevoVerde = new Texture("huevoVerde.png");
+        textureHuevoNaranja = new Texture("huevoNaranja.png");
+        textureHuevoRoja = new Texture("huevoRojo.png");
+        textureHuevoAzul = new Texture("huevoAzul.png");
+        textureHuevoRosa = new Texture("huevoRosa.png");
 
+        textureHuevoVerde.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        textureHuevoNaranja.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        textureHuevoRoja.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        textureHuevoAzul.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        textureHuevoRosa.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         //Textura fondo
         background = new Texture("arena.png");
