@@ -1,7 +1,6 @@
 package com.test.hormigas;
 
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Planta extends MyActor {
@@ -10,10 +9,10 @@ public class Planta extends MyActor {
      * Van apareciendo aleatoriamente. Tienen que ser regadas para poder ser comidas.
      */
 
-    private Texture texture;
     private int energia = 0;
 
-    private boolean puede_comerse = false;
+    private boolean viva = true;
+    private boolean comestible = false;
 
     private final int ENERGIA_MAX = 4;
 
@@ -36,34 +35,27 @@ public class Planta extends MyActor {
 
     public void regar() {
         energia += 2;
+
         if (energia == ENERGIA_MAX)
-            puede_comerse = true;
+            comestible = true;
     }
 
     public void comer() {
         energia--;
 
         if (energia <= 0)
-            puede_comerse = false;
+            comestible = false;
     }
 
-    public boolean estaViva() {
-        return energia > 0;
+    public boolean isViva() {
+        return viva;
     }
 
-    /**
-     * GETTERS AND SETTERS
-     */
-
-    public int getEnergia() {
-        return energia;
+    public void matar() {
+        viva = false;
     }
 
-    public void setEnergia(int energia) {
-        this.energia = energia;
-    }
-
-    public boolean getComestible() {
-        return puede_comerse;
+    public boolean isComestible() {
+        return comestible;
     }
 }

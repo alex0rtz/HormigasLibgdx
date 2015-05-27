@@ -168,29 +168,30 @@ public class PantallaHormiga implements Screen {
             hormiga.clearActions();
             hormiga.mirar(planta);
 
-
-            //TODO Hacer que no puedan comer cuando ya no hay comida
-            if (hormiga.getTipo() != Hormiga.ROJA || planta.getComestible()) {
+            // Regar planta
+            if (planta.isViva() && !planta.isComestible() && hormiga.getTipo() != Hormiga.ROJA) {
                 hormiga.pelear();
-
-                if (!planta.getComestible()) {
-                    planta.regar();
-                    hormiga.regar();
-                } else {
-                    planta.comer();
-                    hormiga.comer();
-                    if (!planta.estaViva()) {
-                        stage.addAction(Actions.delay(Hormiga.TIEMPO_PELEA * Hormiga.IMPACTOS_PELEA * 2,
-                                        Actions.run(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                pendientesEliminar.add(planta);
-                                            }
-                                        })
-                                )
-                        );
-                    }
+                planta.regar();
+                hormiga.regar();
+                // Comer planta
+            } else if (planta.isComestible() && planta.isViva()) {
+                hormiga.pelear();
+                planta.comer();
+                hormiga.comer();
+                // Matar planta
+                if (!planta.isComestible()) {
+                    planta.matar();
+                    stage.addAction(Actions.delay(Hormiga.TIEMPO_PELEA * Hormiga.IMPACTOS_PELEA * 2,
+                                    Actions.run(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            pendientesEliminar.add(planta);
+                                        }
+                                    })
+                            )
+                    );
                 }
+
             } else {
                 hormiga.invertDireccion();
             }
