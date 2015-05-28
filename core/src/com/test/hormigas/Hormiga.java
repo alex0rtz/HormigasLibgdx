@@ -53,6 +53,7 @@ public class Hormiga extends MyActor {
     private boolean chocada = true;
     private boolean peleando = false;
     private boolean esAdulta = false;
+    private boolean viva = true;
 
     private float tiempoCrecimiento = 0;
 
@@ -207,10 +208,7 @@ public class Hormiga extends MyActor {
     }
 
     public void pelear() {
-
         setPeleando(true);
-
-
         addAction(Actions.delay(Hormiga.TIEMPO_GIRO, Actions.run(new Runnable() {
             @Override
             public void run() {
@@ -223,7 +221,6 @@ public class Hormiga extends MyActor {
                                         Actions.sequence(
                                                 Actions.moveBy(x, y, TIEMPO_PELEA),
                                                 Actions.moveBy(-x, -y, TIEMPO_PELEA)
-
                                         )
                                 ),
                                 Actions.run(new Runnable() {
@@ -237,12 +234,9 @@ public class Hormiga extends MyActor {
                 );
             }
         })));
-
-
     }
 
     public void mover(float angulo) {
-
         moverInicial(angulo);
 
         addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE, Actions.run(new Runnable() {
@@ -255,7 +249,6 @@ public class Hormiga extends MyActor {
 
 
     public void moverInicial(float angulo) {
-
         float x = (float) (100 * Math.cos(angulo * Math.PI / 180));
         float y = (float) (100 * Math.sin(angulo * Math.PI / 180));
 
@@ -311,6 +304,15 @@ public class Hormiga extends MyActor {
         energia--;
     }
 
+    public void ganarPelea(int cantidad) {
+        energia += cantidad;
+        victorias++;
+    }
+
+    public void perderPelea() {
+        energia /= 2;
+    }
+
     /**
      * GETTERS AND SETTERS
      */
@@ -339,7 +341,11 @@ public class Hormiga extends MyActor {
         return esAdulta;
     }
 
-    public void setEsAdulta(boolean esAdulta) {
-        this.esAdulta = esAdulta;
+    public int getVictorias() {
+        return victorias;
+    }
+
+    public int getEnergia() {
+        return energia;
     }
 }

@@ -194,6 +194,8 @@ public class PantallaHormiga implements Screen {
             return;
         }
 
+        int pro = ran.nextInt(100) + 1;
+
         if (!hormiga.isChocada()) {
             hormiga.setChocada(true);
             hormiga.clearActions();
@@ -201,9 +203,26 @@ public class PantallaHormiga implements Screen {
 
             // Regar planta
             if (planta.isViva() && !planta.isComestible() && hormiga.getTipo() != Hormiga.ROJA) {
-                hormiga.pelear();
-                planta.regar();
-                hormiga.regar();
+                if (hormiga.getTipo() == Hormiga.VERDE) {
+                    hormiga.pelear();
+                    planta.regar();
+                    hormiga.regar();
+                } else if (hormiga.getTipo() == Hormiga.AZUL && pro >= 1 && pro <= 75) {
+                    hormiga.pelear();
+                    planta.regar();
+                    hormiga.regar();
+                } else if (hormiga.getTipo() == Hormiga.NARANJA && pro >= 1 && pro <= 50) {
+                    hormiga.pelear();
+                    planta.regar();
+                    hormiga.regar();
+                } else if (hormiga.getTipo() == Hormiga.ROSA && pro >= 1 && pro <= 25) {
+                    hormiga.pelear();
+                    planta.regar();
+                    hormiga.regar();
+                } else {
+                    hormiga.invertDireccion();
+                }
+
                 // Comer planta
             } else if (planta.isComestible() && planta.isViva()) {
                 hormiga.pelear();
@@ -232,12 +251,12 @@ public class PantallaHormiga implements Screen {
     private void choqueEntreHormigas(final Hormiga h1, final Hormiga h2) {
 
         if (!h1.isEsAdulta() || !h2.isEsAdulta()) {
-            if (!h1.isEsAdulta()) {
-                h1.seguirCreciendo();
-                h2.invertDireccion();
-            } else if (!h2.isEsAdulta()) {
-                h2.seguirCreciendo();
+            if (h1.isEsAdulta()) {
                 h1.invertDireccion();
+                h2.seguirCreciendo();
+            } else if (h2.isEsAdulta()) {
+                h2.invertDireccion();
+                h1.seguirCreciendo();
             } else {
                 h1.seguirCreciendo();
                 h2.seguirCreciendo();
@@ -255,7 +274,54 @@ public class PantallaHormiga implements Screen {
         }
 
         // Reproducirse
-        if (h1.getTipo() == h2.getTipo()) {
+        int pro1 = ran.nextInt(100) + 1;
+        int pro2 = ran.nextInt(100) + 1;
+        int pp1;
+        int pr1;
+        int pp2;
+        int pr2;
+
+        if (h1.getTipo() == Hormiga.VERDE) {
+            pr1 = 20;
+            pp1 = 0;
+        } else if (h1.getTipo() == Hormiga.NARANJA) {
+            pp1 = 40;
+            pr1 = 20;
+        } else if (h1.getTipo() == Hormiga.ROJA) {
+            pp1 = 80;
+            pr1 = 20;
+        } else if (h1.getTipo() == Hormiga.AZUL) {
+            pp1 = 20;
+            pr1 = 20;
+        } else {
+            pp1 = 60;
+            pr1 = 20;
+        }
+
+        if (h2.getTipo() == Hormiga.VERDE) {
+            pr2 = 20;
+            pp2 = 0;
+        } else if (h2.getTipo() == Hormiga.NARANJA) {
+            pp2 = 40;
+            pr2 = 20;
+        } else if (h2.getTipo() == Hormiga.ROJA) {
+            pp2 = 80;
+            pr2 = 20;
+        } else if (h2.getTipo() == Hormiga.AZUL) {
+            pp2 = 20;
+            pr2 = 20;
+        } else {
+            pp2 = 60;
+            pr2 = 20;
+        }
+
+        if (pro1 >= 1 && pro1 <= pp1 || pro2 >= 1 && pro2 <= pp2) {
+            h1.mirar(h2);
+            h2.mirar(h1);
+            h1.pelear();
+            h2.pelear();
+            pelearse(h1, h2);
+        } else if (pro1 >= pp1 + 1 && pro1 <= pp1 + pr1 || pro2 >= pp2 + 1 && pro2 <= pp2 + pr2) {
             h1.reproducir();
             h2.reproducir();
             h1.mirar(h2);
@@ -278,14 +344,66 @@ public class PantallaHormiga implements Screen {
             );
 
             return;
-        } /* Pelearse */ else {
-            h1.mirar(h2);
-            h2.mirar(h1);
-            h1.pelear();
-            h2.pelear();
+        } else {
+            h1.invertDireccion();
+            h2.invertDireccion();
+        }
+    }
 
+    public void pelearse(Hormiga h1, Hormiga h2) {
+        int h1e = h1.getEnergia();
+        int h1v = h1.getVictorias();
+        int h2e = h2.getEnergia();
+        int h2v = h2.getVictorias();
 
+        int h1t;
+        int h2t;
 
+        /**
+         * Comprueba cual de las dos hormigas tiene más energia.
+         * La que tiene más energia es el 100% y la otra sera el porcentaje respecto a la otra.
+         * La energia vale un 60%.
+         */
+        if (h1e > h2e && (h1v != 0 && h2v != 0)) {
+            h2e = (h1e / h2e) * 10;
+            h1e = 60;
+        } else if (h1e > h2e && (h1v != 0 && h2v != 0)) {
+            h1e = (h2e / h1e) * 10;
+            h2e = 60;
+        }
+
+        /**
+         * Comprueba cual de las dos hormigas tiene más energia.
+         * La que tiene más victorias es el 100% y la otra sera el porcentaje respecto a la otra.
+         * La victorias vale un 40%.
+         */
+        if (h1v > h2v && (h1v != 0 && h2v != 0)) {
+            h2v = (h1v / h2v) * 10;
+            h1v = 40;
+        } else if (h1v < h2v && (h1v != 0 && h2v != 0)) {
+            h1v = (h2v / h1v) * 10;
+            h2v = 40;
+        } else {
+            h2v = 0;
+            h1v = 0;
+        }
+
+        /**
+         * Se suman ambos resultados. De ambas hormigas.
+         */
+        h1t = h1e + h1v;
+        h2t = h2e + h2v;
+
+        /**
+         * La que tenga mas puntuación que la otra ganará.
+         * Y por lo tanto se hace con la mitad de la energia de la otra.
+         */
+        if (h1t > h2t) {
+            h1.ganarPelea(h2.getEnergia() / 2);
+            h2.perderPelea();
+        } else {
+            h2.ganarPelea(h1.getEnergia() / 2);
+            h1.perderPelea();
         }
     }
 
