@@ -18,6 +18,8 @@ import java.util.Vector;
 public class PantallaHormiga implements Screen {
 
     private static final int HORMIGAS_POR_CLIC = 25;
+    private final float TIEMPO_PLANTAS = 5;
+    private float tiempo_nueva_planta = 0;
     private final int MARGEN_PLANTAS = 70;
 
     private Stage stage;
@@ -50,7 +52,7 @@ public class PantallaHormiga implements Screen {
         crearHormigas(3, 2);
         crearHormigas(4, 2);
         crearHormigas(5, 2);
-        crearPlantas(0);
+        crearPlantas(10);
     }
 
     @Override
@@ -65,6 +67,13 @@ public class PantallaHormiga implements Screen {
         act(delta);
         draw();
 
+        tiempo_nueva_planta += delta;
+
+        if (tiempo_nueva_planta >= TIEMPO_PLANTAS) {
+            crearPlantas(1);
+            tiempo_nueva_planta = 0;
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
     }
 
@@ -73,7 +82,6 @@ public class PantallaHormiga implements Screen {
         stage.act(delta);
         processInput();
         detectarColision();
-        Gdx.app.log("Numero de hormigas:", "" + actores.size());
     }
 
     public void draw() {
@@ -204,28 +212,27 @@ public class PantallaHormiga implements Screen {
             // Regar planta
             if (planta.isViva() && !planta.isComestible() && hormiga.getTipo() != Hormiga.ROJA) {
                 if (hormiga.getTipo() == Hormiga.VERDE) {
-                    hormiga.pelear();
                     planta.regar();
                     hormiga.regar();
+                    comprobarMuerte(hormiga);
                 } else if (hormiga.getTipo() == Hormiga.AZUL && pro >= 1 && pro <= 75) {
-                    hormiga.pelear();
                     planta.regar();
                     hormiga.regar();
+                    comprobarMuerte(hormiga);
                 } else if (hormiga.getTipo() == Hormiga.NARANJA && pro >= 1 && pro <= 50) {
-                    hormiga.pelear();
                     planta.regar();
                     hormiga.regar();
+                    comprobarMuerte(hormiga);
                 } else if (hormiga.getTipo() == Hormiga.ROSA && pro >= 1 && pro <= 25) {
-                    hormiga.pelear();
                     planta.regar();
                     hormiga.regar();
+                    comprobarMuerte(hormiga);
                 } else {
-                    hormiga.invertDireccion();
+                    hormiga.rebotar();
                 }
 
                 // Comer planta
             } else if (planta.isComestible() && planta.isViva()) {
-                hormiga.pelear();
                 planta.comer();
                 hormiga.comer();
                 // Matar planta
@@ -243,26 +250,26 @@ public class PantallaHormiga implements Screen {
                 }
 
             } else {
-                hormiga.invertDireccion();
+                hormiga.rebotar();
             }
         }
     }
 
+    private void comprobarMuerte(final Hormiga hormiga) {
+        if (!hormiga.viva())
+            stage.addAction(Actions.delay(Hormiga.TIEMPO_PELEA * Hormiga.IMPACTOS_PELEA * 2,
+                            Actions.run(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pendientesEliminar.add(hormiga);
+                                }
+                            })
+                    )
+            );
+    }
+
     private void choqueEntreHormigas(final Hormiga h1, final Hormiga h2) {
 
-        if (!h1.isEsAdulta() || !h2.isEsAdulta()) {
-            if (h1.isEsAdulta()) {
-                h1.invertDireccion();
-                h2.seguirCreciendo();
-            } else if (h2.isEsAdulta()) {
-                h2.invertDireccion();
-                h1.seguirCreciendo();
-            } else {
-                h1.seguirCreciendo();
-                h2.seguirCreciendo();
-            }
-            return;
-        }
 
         if (h1.isChocada() || h2.isChocada())
             return;
@@ -271,6 +278,24 @@ public class PantallaHormiga implements Screen {
             h2.setChocada(true);
             h1.clearActions();
             h2.clearActions();
+        }
+
+        if (!h1.isEsAdulta() || !h2.isEsAdulta()) {
+            if (h1.isEsAdulta()) {
+                h1.rebotar();
+                h2.seguirCreciendo();
+                h2.mover(h2.getRandomAngle());
+            } else if (h2.isEsAdulta()) {
+                h2.rebotar();
+                h1.seguirCreciendo();
+                h1.mover(h1.getRandomAngle());
+            } else {
+                h1.seguirCreciendo();
+                h1.rebotar();
+                h2.seguirCreciendo();
+                h2.mover(h2.getRandomAngle());
+            }
+            return;
         }
 
         // Reproducirse
@@ -321,13 +346,15 @@ public class PantallaHormiga implements Screen {
             h1.pelear();
             h2.pelear();
             pelearse(h1, h2);
+            comprobarMuerte(h1);
+            comprobarMuerte(h2);
         } else if (pro1 >= pp1 + 1 && pro1 <= pp1 + pr1 || pro2 >= pp2 + 1 && pro2 <= pp2 + pr2) {
-            h1.reproducir();
-            h2.reproducir();
             h1.mirar(h2);
-            h2.mirar(h1);
+            h2.girar(h1);
             h1.pelear();
             h2.pelear();
+            comprobarMuerte(h1);
+            comprobarMuerte(h2);
 
             Vector2 centroH1 = h1.localToStageCoordinates(new Vector2(h1.getOriginX(), h1.getOriginY()));
             Vector2 centroH2 = h2.localToStageCoordinates(new Vector2(h2.getOriginX(), h2.getOriginY()));
@@ -337,7 +364,7 @@ public class PantallaHormiga implements Screen {
                             Actions.run(new Runnable() {
                                 @Override
                                 public void run() {
-                                    crearHuevo(h1.getTipo(), centroHuevo);
+                                    crearHuevo(reproducirse(h1, h2), centroHuevo);
                                 }
                             })
                     )
@@ -345,63 +372,169 @@ public class PantallaHormiga implements Screen {
 
             return;
         } else {
-            h1.invertDireccion();
-            h2.invertDireccion();
+            h1.rebotar();
+            h2.rebotar();
         }
     }
 
+    private int reproducirse(Hormiga h1, Hormiga h2) {
+        h1.reproducir();
+        h2.reproducir();
+
+        float h1verde, h1naranja, h1roja, h1azul, h1rosa;
+        float h2verde, h2naranja, h2roja, h2azul, h2rosa;
+        float totalVerde, totalNaranja, totalRoja, totalAzul, totalRosa;
+
+        switch (h1.getTipo()) {
+            case Hormiga.VERDE:
+                h1verde = 25;
+                h1azul = 10;
+                h1naranja = 7;
+                h1rosa = 7;
+                h1roja = 1;
+                break;
+            case Hormiga.NARANJA:
+                h1verde = 4;
+                h1azul = 8;
+                h1naranja = 25;
+                h1rosa = 9;
+                h1roja = 4;
+                break;
+            case Hormiga.ROJA:
+                h1verde = 1;
+                h1azul = 7;
+                h1naranja = 7;
+                h1rosa = 10;
+                h1roja = 25;
+                break;
+            case Hormiga.AZUL:
+                h1verde = 7;
+                h1azul = 25;
+                h1naranja = 10;
+                h1rosa = 7;
+                h1roja = 1;
+                break;
+            default:
+                h1verde = 4;
+                h1azul = 8;
+                h1naranja = 9;
+                h1rosa = 25;
+                h1roja = 4;
+                break;
+        }
+
+        switch (h2.getTipo()) {
+            case Hormiga.VERDE:
+                h2verde = 25;
+                h2azul = 10;
+                h2naranja = 7;
+                h2rosa = 7;
+                h2roja = 1;
+                break;
+            case Hormiga.NARANJA:
+                h2verde = 4;
+                h2azul = 8;
+                h2naranja = 25;
+                h2rosa = 9;
+                h2roja = 4;
+                break;
+            case Hormiga.ROJA:
+                h2verde = 1;
+                h2azul = 7;
+                h2naranja = 7;
+                h2rosa = 10;
+                h2roja = 25;
+                break;
+            case Hormiga.AZUL:
+                h2verde = 7;
+                h2azul = 25;
+                h2naranja = 10;
+                h2rosa = 7;
+                h2roja = 1;
+                break;
+            default:
+                h2verde = 4;
+                h2azul = 8;
+                h2naranja = 9;
+                h2rosa = 25;
+                h2roja = 4;
+                break;
+        }
+
+        totalAzul = h1azul + h2azul;
+        totalRosa = h1rosa + h2rosa;
+        totalNaranja = h1naranja + h2naranja;
+        totalVerde = h1verde + h2verde;
+        totalRoja = h1roja + h2roja;
+
+        float pro = ran.nextFloat() * 100 + 1;
+
+        if (pro >= 1 && pro <= totalAzul) {
+            return Hormiga.AZUL;
+        } else if (pro >= totalAzul + 1 && pro <= totalAzul + totalRosa) {
+            return Hormiga.ROSA;
+        } else if (pro >= totalAzul + totalRosa + 1 && pro <= totalAzul + totalRosa + totalNaranja) {
+            return Hormiga.NARANJA;
+        } else if (pro >= totalAzul + totalRosa + totalNaranja + 1 && pro <= totalAzul + totalRosa + totalNaranja + totalVerde) {
+            return Hormiga.VERDE;
+        } else {
+            return Hormiga.ROJA;
+        }
+
+    }
+
     public void pelearse(Hormiga h1, Hormiga h2) {
+        float pro;
+
         int h1e = h1.getEnergia();
         int h1v = h1.getVictorias();
         int h2e = h2.getEnergia();
         int h2v = h2.getVictorias();
 
-        int h1t;
-        int h2t;
+        float porEne1, porEne2;
+        float porVic1, porVic2;
+        float porRan = 10;
+        float porTotal1, porTotal2;
+        float porTotal;
 
         /**
          * Comprueba cual de las dos hormigas tiene más energia.
          * La que tiene más energia es el 100% y la otra sera el porcentaje respecto a la otra.
-         * La energia vale un 60%.
+         * La energia vale un 50%.
          */
-        if (h1e > h2e && (h1v != 0 && h2v != 0)) {
-            h2e = (h1e / h2e) * 10;
-            h1e = 60;
-        } else if (h1e > h2e && (h1v != 0 && h2v != 0)) {
-            h1e = (h2e / h1e) * 10;
-            h2e = 60;
-        }
+        porEne1 = (h1e / 50) * 100;
+        porEne2 = (h2e / 50) * 100;
 
         /**
          * Comprueba cual de las dos hormigas tiene más energia.
          * La que tiene más victorias es el 100% y la otra sera el porcentaje respecto a la otra.
          * La victorias vale un 40%.
          */
-        if (h1v > h2v && (h1v != 0 && h2v != 0)) {
-            h2v = (h1v / h2v) * 10;
-            h1v = 40;
-        } else if (h1v < h2v && (h1v != 0 && h2v != 0)) {
-            h1v = (h2v / h1v) * 10;
-            h2v = 40;
-        } else {
-            h2v = 0;
-            h1v = 0;
-        }
+        porVic1 = (h1v / 40) * 100;
+        porVic2 = (h2v / 40) * 100;
+
+        /**
+         * El azar representa el 10%, para que una hormiga inferior tengo alguna posibilidad de ganar a
+         * una hormiga que tenga más posibilidades
+         */
+        porTotal1 = porEne1 + porVic1 + porRan;
+        porTotal2 = porEne2 + porVic2 + porRan;
 
         /**
          * Se suman ambos resultados. De ambas hormigas.
          */
-        h1t = h1e + h1v;
-        h2t = h2e + h2v;
+        porTotal = porTotal1 + porTotal2;
 
         /**
          * La que tenga mas puntuación que la otra ganará.
          * Y por lo tanto se hace con la mitad de la energia de la otra.
          */
-        if (h1t > h2t) {
+        pro = ran.nextFloat() * porTotal + 1;
+
+        if (pro >= 1 && pro <= porTotal1) {
             h1.ganarPelea(h2.getEnergia() / 2);
             h2.perderPelea();
-        } else {
+        } else if (pro >= porTotal1 + 1 && pro <= porTotal) {
             h2.ganarPelea(h1.getEnergia() / 2);
             h1.perderPelea();
         }

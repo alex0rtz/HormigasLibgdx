@@ -143,8 +143,8 @@ public class Hormiga extends MyActor {
 
             if (!esAdulta)
                 seguirCreciendo();
-            else
-                mover(getRandomAngle());
+
+            mover(getRandomAngle());
         }
 
     }
@@ -189,7 +189,7 @@ public class Hormiga extends MyActor {
         return random.nextInt(360);
     }
 
-    public void invertDireccion() {
+    public void rebotar() {
         float angle = getRotation();
         angle -= random.nextInt(50) + 166 - 90;
 
@@ -204,6 +204,18 @@ public class Hormiga extends MyActor {
         Vector2 coordsActor = actor.localToStageCoordinates(new Vector2(actor.getOriginX(), actor.getOriginY()));
 
         addAction(Actions.rotateTo((float) getAngle(coordsActor) - 90, TIEMPO_GIRO));
+
+    }
+
+    public void girar(Actor actor) {
+
+        Vector2 coordsActor = actor.localToStageCoordinates(new Vector2(actor.getOriginX(), actor.getOriginY()));
+
+        float angulo = ((float) getAngle(coordsActor) + 90);
+
+        angulo = angulo % 360;
+
+        addAction(Actions.rotateTo(angulo, TIEMPO_GIRO));
 
     }
 
@@ -227,7 +239,7 @@ public class Hormiga extends MyActor {
                                     @Override
                                     public void run() {
                                         peleando = false;
-                                        invertDireccion();
+                                        rebotar();
                                     }
                                 })
                         )
@@ -267,15 +279,15 @@ public class Hormiga extends MyActor {
     public void energiaInicial() {
         switch (tipo) {
             case VERDE:
-                energia = 10;
+                energia = 3;
                 break;
             case NARANJA:
             case AZUL:
             case ROSA:
-                energia = 7;
+                energia = 3;
                 break;
             case ROJA:
-                energia = 5;
+                energia = 3;
                 break;
 
         }
@@ -283,8 +295,6 @@ public class Hormiga extends MyActor {
 
     public void seguirCreciendo() {
         chocada = true;
-        clearActions();
-        invertDireccion();
         crecer(TIEMPO_CRECIMIENTO - tiempoCrecimiento);
     }
 
@@ -293,10 +303,12 @@ public class Hormiga extends MyActor {
     }
 
     public void regar() {
+        pelear();
         energia--;
     }
 
     public void comer() {
+        pelear();
         energia += 2;
     }
 
@@ -311,6 +323,10 @@ public class Hormiga extends MyActor {
 
     public void perderPelea() {
         energia /= 2;
+    }
+
+    public boolean viva() {
+        return energia >= 1;
     }
 
     /**
