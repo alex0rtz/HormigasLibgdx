@@ -3,12 +3,13 @@ package com.test.hormigas;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.Random;
 
-public class Hormiga extends MyActor {
+public abstract class Hormiga extends MyActor {
 
     // https://github.com/JavadocMD/JackJaneRace/blob/master/actionTest/src/com/javadocmd/actionTest/actor/RunnerActor.java
 
@@ -52,53 +53,27 @@ public class Hormiga extends MyActor {
 
     private boolean chocada = true;
     private boolean peleando = false;
-    private boolean esAdulta = false;
     private boolean viva = true;
 
-    private float tiempoCrecimiento = 0;
+    private float vision;
 
-    public static final int VERDE = 1;
-    public static final int NARANJA = 2;
-    public static final int ROJA = 3;
-    public static final int AZUL = 4;
-    public static final int ROSA = 5;
-
-    public static final int TAMANO = 35;
-    private static final float VELOCIDAD = 200;
+    private static final float VELOCIDAD = 250;
     public static final float TIEMPO_GIRO = 0.15f;
     public static final float TIEMPO_CHOQUE = 0.2f;
     public static final float TIEMPO_PELEA = 0.125f;
     public static final int IMPACTOS_PELEA = 6;
-    public static final float TIEMPO_CRECIMIENTO = 5;
 
     /**
      * CONSTRUCTOR
      */
 
-    public Hormiga(int tipo, float posX, float posY) {
-        super(posX, posY, TAMANO);
-        setBounds(posX, posY, TAMANO, TAMANO);
+    public Hormiga(int tipo, float posX, float posY, float tamano, float vision, int sector) {
+        super(posX, posY, tamano, vision, sector);
+        setBounds(posX, posY, tamano, tamano);
 
         this.tipo = tipo;
-        energiaInicial();
-        animation = getAnimation();
-        setOrigin(TAMANO / 2, TAMANO / 2);
-        setScale(0.1f);
-
-        getPolygon().setPosition(getX(), getY());
-        getPolygon().setScale(getScaleX(), getScaleY());
-
-        moverInicial(getRandomAngle());
-
-        addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE * 10, Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                setChocada(false);
-            }
-        })));
-
-        crecer(TIEMPO_CRECIMIENTO);
-
+        this.vision = vision;
+        setOrigin(tamano / 2, tamano / 2);
     }
 
     /**
@@ -107,7 +82,6 @@ public class Hormiga extends MyActor {
 
     @Override
     public void draw(Batch batch, float alpha) {
-        batch.draw(animation.getKeyFrame(stateTime, true), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
     }
 
     @Override
@@ -115,36 +89,18 @@ public class Hormiga extends MyActor {
         super.act(delta);
         stateTime += delta;
 
-        if (!esAdulta) {
-
-            getPolygon().setScale(getScaleX(), getScaleY());
-
-            tiempoCrecimiento += delta;
-            if (tiempoCrecimiento >= TIEMPO_CRECIMIENTO)
-                esAdulta = true;
-        }
-
         getPolygon().setPosition(getX(), getY());
         getPolygon().setRotation(getRotation());
 
-        // Comprueba si las hormigas están entre la pantalla y cuando llegan al extremos chocan y cambian de dirección.
-        if (!peleando && (getX() < 0 || getX() > Assets.screenWidth - Hormiga.TAMANO || getY() < 0 || getY() > Assets.screenHeight - Hormiga.TAMANO)) {
-            clearActions();
+        float x = getX();
+        float y = getY();
 
-
-            if (getX() <= 0)
-                setX(0);
-            else if (getX() >= Assets.screenWidth - Hormiga.TAMANO)
-                setX(Assets.screenWidth - Hormiga.TAMANO);
-            else if (getY() <= 0)
-                setY(0);
-            else if (getY() >= Assets.screenHeight - Hormiga.TAMANO)
-                setY(Assets.screenHeight - Hormiga.TAMANO);
-
-            if (!esAdulta)
-                seguirCreciendo();
-
-            mover(getRandomAngle());
+        for (Vector3 vec : PantallaHormiga.getCoordSectores()) {
+            if (x >= vec.x && x <= vec.x + (Assets.screenWidth / 6) && y >= vec.y && y <= vec.y + (Assets.screenHeight)) {
+                PantallaHormiga.eliminarSector(sector, this);
+                PantallaHormiga.introducirSector(((int) vec.z), this);
+                sector = ((int) vec.z);
+            }
         }
 
     }
@@ -157,21 +113,6 @@ public class Hormiga extends MyActor {
     /**
      * ACCIONES DE LA HORMIGA
      */
-
-    public Animation getAnimation() {
-        switch (tipo) {
-            case VERDE:
-                return Assets.animationVerde;
-            case NARANJA:
-                return Assets.animationNaranja;
-            case ROJA:
-                return Assets.animationRoja;
-            case AZUL:
-                return Assets.animationAzul;
-            default:
-                return Assets.animationRosa;
-        }
-    }
 
     public double getAngle(Vector2 coordsTarget) {
 
@@ -276,32 +217,6 @@ public class Hormiga extends MyActor {
         );
     }
 
-    public void energiaInicial() {
-        switch (tipo) {
-            case VERDE:
-                energia = 3;
-                break;
-            case NARANJA:
-            case AZUL:
-            case ROSA:
-                energia = 3;
-                break;
-            case ROJA:
-                energia = 3;
-                break;
-
-        }
-    }
-
-    public void seguirCreciendo() {
-        chocada = true;
-        crecer(TIEMPO_CRECIMIENTO - tiempoCrecimiento);
-    }
-
-    public void crecer(float tiempo) {
-        addAction(Actions.scaleTo(1.0f, 1.0f, tiempo));
-    }
-
     public void regar() {
         pelear();
         energia--;
@@ -312,18 +227,31 @@ public class Hormiga extends MyActor {
         energia += 2;
     }
 
+    public Vector2 probabilidadObreras() {
+        if (tipo == Assets.VERDE) {
+            return new Vector2(0 /* Probabilidad de Pelearse */, 20/* Probabilidad de Reproducirse */);
+        } else if (tipo == Assets.NARANJA) {
+            return new Vector2(40, 20);
+        } else if (tipo == Assets.ROJA) {
+            return new Vector2(80, 20);
+        } else if (tipo == Assets.AZUL) {
+            return new Vector2(20, 20);
+        } else {
+            return new Vector2(60, 20);
+        }
+    }
+
     public void reproducir() {
         energia--;
     }
 
-    public void ganarPelea(int cantidad) {
-        energia += cantidad;
-        victorias++;
-    }
+    public abstract Animation getAnimation();
 
-    public void perderPelea() {
-        energia /= 2;
-    }
+    public abstract void energiaInicial();
+
+    public abstract void ganarPelea(int cantidad);
+
+    public abstract void perderPelea();
 
     public boolean viva() {
         return energia >= 1;
@@ -351,10 +279,6 @@ public class Hormiga extends MyActor {
 
     public boolean isPeleando() {
         return peleando;
-    }
-
-    public boolean isEsAdulta() {
-        return esAdulta;
     }
 
     public int getVictorias() {

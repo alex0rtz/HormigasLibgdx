@@ -21,16 +21,16 @@ public class Huevo extends Image {
 
     private void darTipo(int tipo) {
         switch (tipo) {
-            case Hormiga.VERDE:
+            case Assets.VERDE:
                 texture = Assets.textureHuevoVerde;
                 break;
-            case Hormiga.NARANJA:
+            case Assets.NARANJA:
                 texture = Assets.textureHuevoNaranja;
                 break;
-            case Hormiga.ROJA:
+            case Assets.ROJA:
                 texture = Assets.textureHuevoRoja;
                 break;
-            case Hormiga.AZUL:
+            case Assets.AZUL:
                 texture = Assets.textureHuevoAzul;
                 break;
             default:
