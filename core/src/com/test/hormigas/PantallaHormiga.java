@@ -895,21 +895,23 @@ public class PantallaHormiga implements Screen {
         }
 
         if (h1 instanceof Obrera || h2 instanceof Obrera) {
-            if (((Obrera) h1).isEsAdulta()) {
-                h1.rebotar();
-                ((Obrera) h2).seguirCreciendo();
-                h2.mover(h2.getRandomAngle());
-            } else if (((Obrera) h2).isEsAdulta()) {
-                h2.rebotar();
-                ((Obrera) h1).seguirCreciendo();
-                h1.mover(h1.getRandomAngle());
-            } else {
-                ((Obrera) h1).seguirCreciendo();
-                h1.rebotar();
-                ((Obrera) h2).seguirCreciendo();
-                h2.mover(h2.getRandomAngle());
+            if (!(((Obrera) h1).isEsAdulta() && ((Obrera) h2).isEsAdulta())) {
+                if (((Obrera) h1).isEsAdulta()) {
+                    h1.rebotar();
+                    ((Obrera) h2).seguirCreciendo();
+                    h2.mover(h2.getRandomAngle());
+                } else if (((Obrera) h2).isEsAdulta()) {
+                    h2.rebotar();
+                    ((Obrera) h1).seguirCreciendo();
+                    h1.mover(h1.getRandomAngle());
+                } else {
+                    ((Obrera) h1).seguirCreciendo();
+                    h1.rebotar();
+                    ((Obrera) h2).seguirCreciendo();
+                    h2.mover(h2.getRandomAngle());
+                }
+                return;
             }
-            return;
         }
 
         // Reproducirse
