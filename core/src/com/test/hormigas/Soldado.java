@@ -30,9 +30,10 @@ public class Soldado extends Hormiga {
     private boolean viva = true;
 
     public static final int TAMANO = Obrera.TAMANO;
+    public static final float VISION = 50;
 
     public Soldado(int tipo, float posX, float posY) {
-        super(tipo, posX, posY, TAMANO, 0);
+        super(tipo, posX, posY, TAMANO, VISION);
         setBounds(posX, posY, TAMANO, TAMANO);
 
         this.tipo = tipo;
@@ -73,6 +74,8 @@ public class Soldado extends Hormiga {
                 setY(Assets.screenHeight - TAMANO);
         }
 
+        PantallaHormiga.detectarIntrusos(this);
+
     }
 
     @Override
@@ -83,7 +86,6 @@ public class Soldado extends Hormiga {
     /**
      * METODOS DEL SOLDADO
      */
-
     public Animation getAnimation() {
         switch (tipo) {
             case Assets.VERDE:

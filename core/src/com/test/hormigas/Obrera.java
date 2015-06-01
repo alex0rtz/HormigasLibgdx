@@ -3,7 +3,6 @@ package com.test.hormigas;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.Random;
 
@@ -28,15 +27,8 @@ public class Obrera extends Hormiga {
      * ATRIBUTOS HORMIGA
      */
 
-
-    private boolean esAdulta = false;
-
-    private float tiempoCrecimiento = 0;
-
     public static final float VISION = 70;
     public static final int TAMANO = 35;
-
-    public static final float TIEMPO_CRECIMIENTO = 5;
 
     /**
      * CONSTRUCTOR
@@ -56,13 +48,6 @@ public class Obrera extends Hormiga {
         getPolygon().setScale(getScaleX(), getScaleY());
 
         moverInicial(getRandomAngle());
-
-        addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE * 10, Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                setChocada(false);
-            }
-        })));
 
         crecer(TIEMPO_CRECIMIENTO);
 
@@ -156,15 +141,6 @@ public class Obrera extends Hormiga {
         }
     }
 
-    public void seguirCreciendo() {
-        setChocada(true);
-        crecer(TIEMPO_CRECIMIENTO - tiempoCrecimiento);
-    }
-
-    public void crecer(float tiempo) {
-        addAction(Actions.scaleTo(1.0f, 1.0f, tiempo));
-    }
-
     public void ganarPelea(int cantidad) {
         energia += cantidad;
         victorias++;
@@ -183,10 +159,6 @@ public class Obrera extends Hormiga {
      */
     public int getTipo() {
         return tipo;
-    }
-
-    public boolean isEsAdulta() {
-        return esAdulta;
     }
 
     public int getVictorias() {

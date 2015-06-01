@@ -62,17 +62,28 @@ public abstract class Hormiga extends MyActor {
     public static final float TIEMPO_PELEA = 0.125f;
     public static final int IMPACTOS_PELEA = 6;
 
+    protected boolean esAdulta = false;
+    protected float tiempoCrecimiento = 0;
+    public static final float TIEMPO_CRECIMIENTO = 5;
+
     /**
      * CONSTRUCTOR
      */
 
     public Hormiga(int tipo, float posX, float posY, float tamano, float vision) {
-        super(posX, posY, tamano, vision);
+        super(posX, posY, tamano, vision, tipo);
         setBounds(posX, posY, tamano, tamano);
 
         this.tipo = tipo;
         this.vision = vision;
         setOrigin(tamano / 2, tamano / 2);
+
+        addAction(Actions.delay(Hormiga.TIEMPO_CHOQUE * 10, Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                setChocada(false);
+            }
+        })));
     }
 
     /**
@@ -101,7 +112,7 @@ public abstract class Hormiga extends MyActor {
      * ACCIONES DE LA HORMIGA
      */
 
-    public double getAngle(Vector2 coordsTarget) {
+    public float getAngle(Vector2 coordsTarget) {
 
         Vector2 coordsThis = localToStageCoordinates(new Vector2(getOriginX(), getOriginY()));
 
@@ -213,7 +224,6 @@ public abstract class Hormiga extends MyActor {
         pelear();
         energia += 2;
     }
-
     public Vector2 probabilidadObreras() {
         if (tipo == Assets.VERDE) {
             return new Vector2(0 /* Probabilidad de Pelearse */, 20/* Probabilidad de Reproducirse */);
@@ -244,6 +254,15 @@ public abstract class Hormiga extends MyActor {
         return energia >= 1;
     }
 
+    public void seguirCreciendo() {
+        setChocada(true);
+        crecer(TIEMPO_CRECIMIENTO - tiempoCrecimiento);
+    }
+
+    public void crecer(float tiempo) {
+        addAction(Actions.scaleTo(1.0f, 1.0f, tiempo));
+    }
+
     /**
      * GETTERS AND SETTERS
      */
@@ -259,6 +278,9 @@ public abstract class Hormiga extends MyActor {
         this.chocada = chocada;
     }
 
+    public boolean isEsAdulta() {
+        return esAdulta;
+    }
 
     public void setPeleando(boolean peleando) {
         this.peleando = peleando;

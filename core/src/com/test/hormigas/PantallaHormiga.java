@@ -39,7 +39,7 @@ public class PantallaHormiga implements Screen {
     private static Vector<MyActor> actores;
     private static Vector<MyActor> pendientesEliminar;
 
-    private Random ran = new Random();
+    private static Random ran = new Random();
 
     public PantallaHormiga(HormigasGame game) {
         stageBatch = new SpriteBatch();
@@ -317,9 +317,24 @@ public class PantallaHormiga implements Screen {
             choqueHormigaPlanta((Hormiga) actor2, (Planta) actor1);
     }
 
+    // TODO Cambiar que en vez compruebe los que estan dentro del radio de visión del soldado compruebe los que estan
+    // TODO dentro del radio de visión del Hormiguero
+    public static void detectarIntrusos(Soldado soldado) {
+        for (MyActor act : PantallaHormiga.getActores()) {
+            if (act instanceof Hormiga && ((Hormiga) act).isChocada())
+                continue;
+            if (soldado != act && (soldado.getTipo() == act.getTipo()) && (act.getPolygon().contains(soldado.getPolygon().getX(), soldado.getPolygon().getY())
+                    || act.getPolygon().contains(soldado.getPolygon().getX() + soldado.VISION, soldado.getPolygon().getY())
+                    || act.getPolygon().contains(soldado.getPolygon().getX() + Soldado.VISION, soldado.getPolygon().getY() + soldado.VISION)
+                    || act.getPolygon().contains(soldado.getPolygon().getX(), soldado.getPolygon().getY() + soldado.VISION))) {
+                soldado.mover(soldado.getAngle(new Vector2(act.getX(), act.getY())));
+            }
+        }
+    }
+
     private void choqueHormigaPlanta(final Hormiga hormiga, final Planta planta) {
-        if (!((Obrera) hormiga).isEsAdulta()) {
-            ((Obrera) hormiga).seguirCreciendo();
+        if (!hormiga.isEsAdulta()) {
+            hormiga.seguirCreciendo();
             return;
         }
 
@@ -402,19 +417,19 @@ public class PantallaHormiga implements Screen {
         }
 
         if (h1 instanceof Obrera || h2 instanceof Obrera) {
-            if (!(((Obrera) h1).isEsAdulta() && ((Obrera) h2).isEsAdulta())) {
-                if (((Obrera) h1).isEsAdulta()) {
+            if (!h1.isEsAdulta() && h2.isEsAdulta()) {
+                if (h1.isEsAdulta()) {
                     h1.rebotar();
-                    ((Obrera) h2).seguirCreciendo();
+                    h2.seguirCreciendo();
                     h2.mover(h2.getRandomAngle());
-                } else if (((Obrera) h2).isEsAdulta()) {
+                } else if (h2.isEsAdulta()) {
                     h2.rebotar();
-                    ((Obrera) h1).seguirCreciendo();
+                    h1.seguirCreciendo();
                     h1.mover(h1.getRandomAngle());
                 } else {
-                    ((Obrera) h1).seguirCreciendo();
+                    h1.seguirCreciendo();
                     h1.rebotar();
-                    ((Obrera) h2).seguirCreciendo();
+                    h2.seguirCreciendo();
                     h2.mover(h2.getRandomAngle());
                 }
                 return;

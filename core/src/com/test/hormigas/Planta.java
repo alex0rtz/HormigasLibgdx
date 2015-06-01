@@ -19,7 +19,7 @@ public class Planta extends MyActor {
     public static final float TAMANO = Obrera.TAMANO * 1.5f;
 
     public Planta(float posX, float posY) {
-        super(posX, posY, TAMANO, 0);
+        super(posX, posY, TAMANO, 0, 0);
 
         setBounds(posX, posY, TAMANO, TAMANO);
         setOrigin(TAMANO / 2, TAMANO / 2);
