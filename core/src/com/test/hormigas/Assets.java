@@ -55,8 +55,12 @@ public class Assets {
     public static Animation animationvSoldadoAzul;
     public static Animation animationSoldadoRosa;
 
+
     public static final float screenWidth = 1280;
     public static final float screenHeight = 720;
+
+    public static final float mapWidth = screenWidth * 4;
+    public static final float mapHeight = screenHeight * 4;
 
     public static void loadtexture(){
         // Textura hormiguero

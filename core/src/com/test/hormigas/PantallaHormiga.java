@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -31,6 +32,8 @@ public class PantallaHormiga implements Screen {
     /**
      * VARIABLES LIBGDX
      */
+    private OrthographicCamera camera;
+
     private Stage stage;
     private FillViewport viewport;
 
@@ -44,6 +47,11 @@ public class PantallaHormiga implements Screen {
     public PantallaHormiga(HormigasGame game) {
         stageBatch = new SpriteBatch();
         viewport = new FillViewport(Assets.screenWidth, Assets.screenHeight);
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, Assets.screenWidth, Assets.screenHeight);
+        camera.update();
+
         actores = new Vector<>();
         pendientesEliminar = new Vector<>();
 
@@ -56,19 +64,12 @@ public class PantallaHormiga implements Screen {
 
         stage.addActor(background);
 
-        crearHormigueros();
         crearHormigasObreras(1, 2);
         crearHormigasObreras(2, 2);
         crearHormigasObreras(3, 2);
         crearHormigasObreras(4, 2);
         crearHormigasObreras(5, 2);
         crearPlantas(10);
-
-        crearHormigasSoldados(1, 2);
-        crearHormigasSoldados(2, 2);
-        crearHormigasSoldados(3, 2);
-        crearHormigasSoldados(4, 2);
-        crearHormigasSoldados(5, 2);
 
     }
 
@@ -80,6 +81,7 @@ public class PantallaHormiga implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor(1, 1, 1, 1);
+        camera.update();
 
         act(delta);
         draw();
@@ -650,6 +652,15 @@ public class PantallaHormiga implements Screen {
         Vector2 touchPoint = new Vector2();
 
         stage.getViewport().unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY()));
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
+            camera.translate(-32, 0);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
+            camera.translate(32, 0);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
+            camera.translate(0, -32);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
+            camera.translate(0, 32);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.H) || (Gdx.input.justTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT))) {
 
