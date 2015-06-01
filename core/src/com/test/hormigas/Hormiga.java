@@ -3,7 +3,6 @@ package com.test.hormigas;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
@@ -67,8 +66,8 @@ public abstract class Hormiga extends MyActor {
      * CONSTRUCTOR
      */
 
-    public Hormiga(int tipo, float posX, float posY, float tamano, float vision, int sector) {
-        super(posX, posY, tamano, vision, sector);
+    public Hormiga(int tipo, float posX, float posY, float tamano, float vision) {
+        super(posX, posY, tamano, vision);
         setBounds(posX, posY, tamano, tamano);
 
         this.tipo = tipo;
@@ -91,18 +90,6 @@ public abstract class Hormiga extends MyActor {
 
         getPolygon().setPosition(getX(), getY());
         getPolygon().setRotation(getRotation());
-
-        float x = getX();
-        float y = getY();
-
-        for (Vector3 vec : PantallaHormiga.getCoordSectores()) {
-            if (x >= vec.x && x <= vec.x + (Assets.screenWidth / 6) && y >= vec.y && y <= vec.y + (Assets.screenHeight)) {
-                PantallaHormiga.eliminarSector(sector, this);
-                PantallaHormiga.introducirSector(((int) vec.z), this);
-                sector = ((int) vec.z);
-            }
-        }
-
     }
 
     @Override

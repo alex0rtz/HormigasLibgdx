@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -37,23 +36,7 @@ public class PantallaHormiga implements Screen {
 
     private SpriteBatch stageBatch;
 
-    private static Vector<MyActor> sector1, sector2, sector3, sector4, sector5, sector6;
-    private static Vector<MyActor> sector7, sector8, sector9, sector10, sector11, sector12;
-    private static Vector<MyActor> sector13, sector14, sector15, sector16, sector17, sector18;
-    private static Vector<MyActor> sector19, sector20, sector21, sector22, sector23, sector24;
-    private static Vector<MyActor> sector25, sector26, sector27, sector28, sector29, sector30;
-    private static Vector<MyActor> sector31, sector32, sector33, sector34, sector35, sector36;
-
-    private static Vector3 sec1, sec2, sec3, sec4, sec5, sec6;
-    private static Vector3 sec7, sec8, sec9, sec10, sec11, sec12;
-    private static Vector3 sec13, sec14, sec15, sec16, sec17, sec18;
-    private static Vector3 sec19, sec20, sec21, sec22, sec23, sec24;
-    private static Vector3 sec25, sec26, sec27, sec28, sec29, sec30;
-    private static Vector3 sec31, sec32, sec33, sec34, sec35, sec36;
-
-    private static Vector<Vector3> coordSectores;
-    private static Vector<Vector> sectores;
-
+    private static Vector<MyActor> actores;
     private static Vector<MyActor> pendientesEliminar;
 
     private Random ran = new Random();
@@ -61,179 +44,7 @@ public class PantallaHormiga implements Screen {
     public PantallaHormiga(HormigasGame game) {
         stageBatch = new SpriteBatch();
         viewport = new FillViewport(Assets.screenWidth, Assets.screenHeight);
-
-        sector1 = new Vector<>();
-        sector2 = new Vector<>();
-        sector3 = new Vector<>();
-        sector4 = new Vector<>();
-        sector5 = new Vector<>();
-        sector6 = new Vector<>();
-
-        sector7 = new Vector<>();
-        sector8 = new Vector<>();
-        sector9 = new Vector<>();
-        sector10 = new Vector<>();
-        sector11 = new Vector<>();
-        sector12 = new Vector<>();
-
-        sector13 = new Vector<>();
-        sector14 = new Vector<>();
-        sector15 = new Vector<>();
-        sector16 = new Vector<>();
-        sector17 = new Vector<>();
-        sector18 = new Vector<>();
-
-        sector19 = new Vector<>();
-        sector20 = new Vector<>();
-        sector21 = new Vector<>();
-        sector22 = new Vector<>();
-        sector23 = new Vector<>();
-        sector24 = new Vector<>();
-
-        sector25 = new Vector<>();
-        sector26 = new Vector<>();
-        sector27 = new Vector<>();
-        sector28 = new Vector<>();
-        sector29 = new Vector<>();
-        sector30 = new Vector<>();
-
-        sector31 = new Vector<>();
-        sector32 = new Vector<>();
-        sector33 = new Vector<>();
-        sector34 = new Vector<>();
-        sector35 = new Vector<>();
-        sector36 = new Vector<>();
-
-        sectores = new Vector<>();
-
-        sectores.add(sector1);
-        sectores.add(sector2);
-        sectores.add(sector3);
-        sectores.add(sector4);
-        sectores.add(sector5);
-        sectores.add(sector6);
-
-        sectores.add(sector7);
-        sectores.add(sector8);
-        sectores.add(sector9);
-        sectores.add(sector10);
-        sectores.add(sector11);
-        sectores.add(sector12);
-
-        sectores.add(sector13);
-        sectores.add(sector14);
-        sectores.add(sector15);
-        sectores.add(sector16);
-        sectores.add(sector17);
-        sectores.add(sector18);
-
-        sectores.add(sector19);
-        sectores.add(sector20);
-        sectores.add(sector21);
-        sectores.add(sector22);
-        sectores.add(sector23);
-        sectores.add(sector24);
-
-        sectores.add(sector25);
-        sectores.add(sector26);
-        sectores.add(sector27);
-        sectores.add(sector28);
-        sectores.add(sector29);
-        sectores.add(sector30);
-
-        sectores.add(sector31);
-        sectores.add(sector32);
-        sectores.add(sector33);
-        sectores.add(sector34);
-        sectores.add(sector35);
-        sectores.add(sector36);
-
-        coordSectores = new Vector<>();
-
-        sec1 = new Vector3(0, 0, 1);
-        sec2 = new Vector3((Assets.screenWidth / 3), 0, 2);
-        sec3 = new Vector3((Assets.screenWidth / 3) * 2, 0, 3);
-        sec4 = new Vector3((Assets.screenWidth / 3) * 3, 0, 4);
-        sec5 = new Vector3((Assets.screenWidth / 3) * 4, 0, 5);
-        sec6 = new Vector3((Assets.screenWidth / 3) * 5, 0, 6);
-
-        sec7 = new Vector3(0, (Assets.screenWidth / 3), 7);
-        sec8 = new Vector3((Assets.screenWidth / 3), (Assets.screenHeight / 3), 8);
-        sec9 = new Vector3((Assets.screenWidth / 3) * 2, (Assets.screenWidth / 3), 9);
-        sec10 = new Vector3((Assets.screenWidth / 3) * 3, (Assets.screenWidth / 3), 10);
-        sec11 = new Vector3((Assets.screenWidth / 3) * 4, (Assets.screenWidth / 3), 11);
-        sec12 = new Vector3((Assets.screenWidth / 3) * 5, (Assets.screenWidth / 3), 12);
-
-        sec13 = new Vector3(0, (Assets.screenHeight / 3) * 2, 13);
-        sec14 = new Vector3((Assets.screenWidth / 3), (Assets.screenHeight / 3) * 2, 14);
-        sec15 = new Vector3((Assets.screenWidth / 3) * 2, (Assets.screenHeight / 3) * 2, 15);
-        sec16 = new Vector3((Assets.screenWidth / 3) * 3, (Assets.screenHeight / 3) * 2, 16);
-        sec17 = new Vector3((Assets.screenWidth / 3) * 4, (Assets.screenHeight / 3) * 2, 17);
-        sec18 = new Vector3((Assets.screenWidth / 3) * 5, (Assets.screenHeight / 3) * 2, 18);
-
-        sec19 = new Vector3(0, (Assets.screenHeight / 3) * 3, 19);
-        sec20 = new Vector3((Assets.screenWidth / 3), (Assets.screenHeight / 3) * 3, 20);
-        sec21 = new Vector3((Assets.screenWidth / 3) * 2, (Assets.screenHeight / 3) * 3, 21);
-        sec22 = new Vector3((Assets.screenWidth / 3) * 3, (Assets.screenHeight / 3) * 3, 22);
-        sec23 = new Vector3((Assets.screenWidth / 3) * 4, (Assets.screenHeight / 3) * 3, 23);
-        sec24 = new Vector3((Assets.screenWidth / 3) * 5, (Assets.screenHeight / 3) * 3, 24);
-
-        sec25 = new Vector3(0, (Assets.screenHeight / 3) * 4, 25);
-        sec26 = new Vector3((Assets.screenWidth / 3), (Assets.screenHeight / 3) * 4, 26);
-        sec27 = new Vector3((Assets.screenWidth / 3) * 2, (Assets.screenHeight / 3) * 4, 27);
-        sec28 = new Vector3((Assets.screenWidth / 3) * 3, (Assets.screenHeight / 3) * 4, 28);
-        sec29 = new Vector3((Assets.screenWidth / 3) * 4, (Assets.screenHeight / 3) * 4, 29);
-        sec30 = new Vector3((Assets.screenWidth / 3) * 5, (Assets.screenHeight / 3) * 4, 30);
-
-        sec31 = new Vector3(0, (Assets.screenHeight / 3) * 5, 31);
-        sec32 = new Vector3((Assets.screenWidth / 3), (Assets.screenHeight / 3) * 5, 32);
-        sec33 = new Vector3((Assets.screenWidth / 3) * 2, (Assets.screenHeight / 3) * 5, 33);
-        sec34 = new Vector3((Assets.screenWidth / 3) * 3, (Assets.screenHeight / 3) * 5, 34);
-        sec35 = new Vector3((Assets.screenWidth / 3) * 4, (Assets.screenHeight / 3) * 5, 35);
-        sec36 = new Vector3((Assets.screenWidth / 3) * 5, (Assets.screenHeight / 3) * 5, 36);
-
-        coordSectores.add(sec1);
-        coordSectores.add(sec2);
-        coordSectores.add(sec3);
-        coordSectores.add(sec4);
-        coordSectores.add(sec5);
-        coordSectores.add(sec6);
-
-        coordSectores.add(sec7);
-        coordSectores.add(sec8);
-        coordSectores.add(sec9);
-        coordSectores.add(sec10);
-        coordSectores.add(sec11);
-        coordSectores.add(sec12);
-
-        coordSectores.add(sec13);
-        coordSectores.add(sec14);
-        coordSectores.add(sec15);
-        coordSectores.add(sec16);
-        coordSectores.add(sec17);
-        coordSectores.add(sec18);
-
-        coordSectores.add(sec19);
-        coordSectores.add(sec20);
-        coordSectores.add(sec21);
-        coordSectores.add(sec22);
-        coordSectores.add(sec23);
-        coordSectores.add(sec24);
-
-        coordSectores.add(sec25);
-        coordSectores.add(sec26);
-        coordSectores.add(sec27);
-        coordSectores.add(sec28);
-        coordSectores.add(sec29);
-        coordSectores.add(sec30);
-
-        coordSectores.add(sec31);
-        coordSectores.add(sec32);
-        coordSectores.add(sec33);
-        coordSectores.add(sec34);
-        coordSectores.add(sec35);
-        coordSectores.add(sec36);
-
+        actores = new Vector<>();
         pendientesEliminar = new Vector<>();
 
         stage = new Stage(viewport, stageBatch);
@@ -253,7 +64,11 @@ public class PantallaHormiga implements Screen {
         crearHormigasObreras(5, 2);
         crearPlantas(10);
 
-        crearHormigasSoldados(1, 1);
+        crearHormigasSoldados(1, 2);
+        crearHormigasSoldados(2, 2);
+        crearHormigasSoldados(3, 2);
+        crearHormigasSoldados(4, 2);
+        crearHormigasSoldados(5, 2);
 
     }
 
@@ -315,7 +130,7 @@ public class PantallaHormiga implements Screen {
      * ACCIONES EN PANTALLA
      */
 
-    public void crearHormiguero(final int tipo, Vector2 pos, int sector) {
+    public void crearHormiguero(final int tipo, Vector2 pos) {
         Hormiguero h = new Hormiguero(tipo, pos.x, pos.y);
         h.setZIndex(20);
         stage.addActor(h);
@@ -355,50 +170,46 @@ public class PantallaHormiga implements Screen {
         int s5 = 0;
         Gdx.app.log("LOCALITATION", "5: " + x5 + " - " + y5);
 
-        for (Vector3 vec : coordSectores) {
-            if (x5 >= vec.x && x5 <= vec.x + (Assets.screenWidth / SECTORES) && y5 >= vec.y && y5 <= vec.y + (Assets.screenHeight)) {
-                s5 = ((int) vec.z);
-            }
-        }
-
         for (int i = 1; i < 6; i++) {
             switch (i) {
                 case 1:
-                    crearHormiguero(1, new Vector2(x1, y1), 1);
+                    crearHormiguero(1, new Vector2(x1, y1));
                     break;
                 case 2:
-                    crearHormiguero(2, new Vector2(x2, y2), 2);
+                    crearHormiguero(2, new Vector2(x2, y2));
                     break;
                 case 3:
-                    crearHormiguero(3, new Vector2(x3, y3), 3);
+                    crearHormiguero(3, new Vector2(x3, y3));
                     break;
                 case 4:
-                    crearHormiguero(4, new Vector2(x4, y4), 4);
+                    crearHormiguero(4, new Vector2(x4, y4));
                     break;
                 case 5:
-                    crearHormiguero(5, new Vector2(x5, y5), s5);
+                    crearHormiguero(5, new Vector2(x5, y5));
                     break;
             }
         }
     }
 
-    public void crearHormigaSoldado(int tipo, Vector2 pos, int sector) {
-        Soldado hs = new Soldado(tipo, pos.x, pos.y, sector);
-        hs.setZIndex(10);
-        introducirSector(sector, hs);
-        stage.addActor(hs);
-        hs.getPolygon().setPosition(hs.getX(), hs.getY());
+    public void crearHormigaSoldado(int tipo, Vector2 pos) {
+        Soldado h = new Soldado(tipo, pos.x, pos.y);
+        h.setZIndex(10);
+        actores.add(h);
+        stage.addActor(h);
+        h.setZIndex(500);
+        h.getPolygon().setPosition(h.getX(), h.getY());
     }
 
-    public void crearHormigaObrera(int tipo, Vector2 pos, int sector) {
-        Obrera ho = new Obrera(tipo, pos.x, pos.y, sector);
-        ho.setZIndex(10);
-        introducirSector(sector, ho);
-        stage.addActor(ho);
-        ho.getPolygon().setPosition(ho.getX(), ho.getY());
+    public void crearHormigaObrera(int tipo, Vector2 pos) {
+        Obrera h = new Obrera(tipo, pos.x, pos.y);
+        h.setZIndex(10);
+        actores.add(h);
+        stage.addActor(h);
+        h.setZIndex(500);
+        h.getPolygon().setPosition(h.getX(), h.getY());
     }
 
-    public void crearHuevo(final int tipo, Vector2 pos, int sector) {
+    public void crearHuevo(final int tipo, Vector2 pos) {
         final Huevo huevo = new Huevo(tipo);
         huevo.setPosition(pos.x, pos.y);
         stage.addActor(huevo);
@@ -407,12 +218,7 @@ public class PantallaHormiga implements Screen {
                         Actions.run(new Runnable() {
                             @Override
                             public void run() {
-                                float x = ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO);
-                                float y = ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO);
-
-                                for (Vector3 vec : coordSectores)
-                                    if (x >= vec.x && x <= vec.x + (Assets.screenWidth / SECTORES) && y >= vec.y && y <= vec.y + (Assets.screenHeight))
-                                        crearHormigaObrera(tipo, new Vector2(x, y), ((int) vec.z));
+                                crearHormigaObrera(tipo, new Vector2(huevo.getX(), huevo.getY()));
                                 huevo.remove();
                             }
                         })
@@ -420,375 +226,76 @@ public class PantallaHormiga implements Screen {
         );
     }
 
-    public void crearPlanta(Vector2 pos, int sector) {
-        Planta p = new Planta(pos.x, pos.y, sector);
-        introducirSector(sector, p);
+    public void crearPlanta(Vector2 pos) {
+        Planta p = new Planta(pos.x, pos.y);
+        actores.add(p);
         stage.addActor(p);
         p.getPolygon().setPosition(p.getX(), p.getY());
     }
 
-    public static void introducirSector(int sector, MyActor actor) {
-        switch (sector) {
-            case 1:
-                sector1.add(actor);
-                break;
-            case 2:
-                sector2.add(actor);
-                break;
-            case 3:
-                sector3.add(actor);
-                break;
-            case 4:
-                sector4.add(actor);
-                break;
-            case 5:
-                sector5.add(actor);
-                break;
-            case 6:
-                sector6.add(actor);
-                break;
-            case 7:
-                sector7.add(actor);
-                break;
-            case 8:
-                sector8.add(actor);
-                break;
-            case 9:
-                sector9.add(actor);
-                break;
-            case 10:
-                sector10.add(actor);
-                break;
-            case 11:
-                sector11.add(actor);
-                break;
-            case 12:
-                sector12.add(actor);
-                break;
-            case 13:
-                sector13.add(actor);
-                break;
-            case 14:
-                sector14.add(actor);
-                break;
-            case 15:
-                sector15.add(actor);
-                break;
-            case 16:
-                sector16.add(actor);
-                break;
-            case 17:
-                sector17.add(actor);
-                break;
-            case 18:
-                sector18.add(actor);
-                break;
-            case 19:
-                sector19.add(actor);
-                break;
-            case 20:
-                sector20.add(actor);
-                break;
-            case 21:
-                sector21.add(actor);
-                break;
-            case 22:
-                sector22.add(actor);
-                break;
-            case 23:
-                sector23.add(actor);
-                break;
-            case 24:
-                sector24.add(actor);
-                break;
-            case 25:
-                sector25.add(actor);
-                break;
-            case 26:
-                sector26.add(actor);
-                break;
-            case 27:
-                sector27.add(actor);
-                break;
-            case 28:
-                sector28.add(actor);
-                break;
-            case 29:
-                sector29.add(actor);
-                break;
-            case 30:
-                sector30.add(actor);
-                break;
-            case 31:
-                sector31.add(actor);
-                break;
-            case 32:
-                sector32.add(actor);
-                break;
-            case 33:
-                sector33.add(actor);
-                break;
-            case 34:
-                sector34.add(actor);
-                break;
-            case 35:
-                sector35.add(actor);
-                break;
-            default:
-                sector36.add(actor);
-                break;
-        }
-    }
-
-    public static void eliminarSector(int sector, MyActor actor) {
-        switch (sector) {
-            case 1:
-                sector1.remove(actor);
-                break;
-            case 2:
-                sector2.remove(actor);
-                break;
-            case 3:
-                sector3.remove(actor);
-                break;
-            case 4:
-                sector4.remove(actor);
-                break;
-            case 5:
-                sector5.remove(actor);
-                break;
-            case 6:
-                sector6.remove(actor);
-                break;
-            case 7:
-                sector7.remove(actor);
-                break;
-            case 8:
-                sector8.remove(actor);
-                break;
-            case 9:
-                sector9.remove(actor);
-                break;
-            case 10:
-                sector10.remove(actor);
-                break;
-            case 11:
-                sector11.remove(actor);
-                break;
-            case 12:
-                sector12.remove(actor);
-                break;
-            case 13:
-                sector13.remove(actor);
-                break;
-            case 14:
-                sector14.remove(actor);
-                break;
-            case 15:
-                sector15.remove(actor);
-                break;
-            case 16:
-                sector16.remove(actor);
-                break;
-            case 17:
-                sector17.remove(actor);
-                break;
-            case 18:
-                sector18.remove(actor);
-                break;
-            case 19:
-                sector19.remove(actor);
-                break;
-            case 20:
-                sector20.remove(actor);
-                break;
-            case 21:
-                sector21.remove(actor);
-                break;
-            case 22:
-                sector22.remove(actor);
-                break;
-            case 23:
-                sector23.remove(actor);
-                break;
-            case 24:
-                sector24.remove(actor);
-                break;
-            case 25:
-                sector25.remove(actor);
-                break;
-            case 26:
-                sector26.remove(actor);
-                break;
-            case 27:
-                sector27.remove(actor);
-                break;
-            case 28:
-                sector28.remove(actor);
-                break;
-            case 29:
-                sector29.remove(actor);
-                break;
-            case 30:
-                sector30.remove(actor);
-                break;
-            case 31:
-                sector31.remove(actor);
-                break;
-            case 32:
-                sector32.remove(actor);
-                break;
-            case 33:
-                sector33.remove(actor);
-                break;
-            case 34:
-                sector34.remove(actor);
-                break;
-            case 35:
-                sector35.remove(actor);
-                break;
-            default:
-                sector36.remove(actor);
-                break;
-        }
-    }
-
     public void crearHormigasObreras(int tipo, int numero) {
-        float x, y;
         for (int i = 0; i < numero; i++) {
-            x = ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO);
-            y = ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO);
-
-            for (Vector3 vec : coordSectores) {
-                if (x >= vec.x && x <= vec.x + (Assets.screenWidth / SECTORES) && y >= vec.y && y <= vec.y + (Assets.screenHeight)) {
-                    crearHormigaObrera(tipo, new Vector2(x, y), ((int) vec.z));
-                }
-            }
-
+            crearHormigaObrera(tipo, new Vector2(ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)));
         }
     }
 
     public void crearHormigasSoldados(int tipo, int numero) {
-        float x, y;
         for (int i = 0; i < numero; i++) {
-            x = ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO);
-            y = ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO);
+            float x1 = ran.nextFloat() * (Assets.screenWidth / SECTORES) + Hormiguero.TAMANO;
+            float y1 = ran.nextFloat() * (Assets.screenHeight / SECTORES) + Hormiguero.TAMANO;
 
-            for (Vector3 vec : coordSectores) {
-                if (x >= vec.x && x <= vec.x + (Assets.screenWidth / SECTORES) && y >= vec.y && y <= vec.y + (Assets.screenHeight)) {
-                    crearHormigaSoldado(tipo, new Vector2(x, y), ((int) vec.z));
-                }
+            float x2 = ran.nextFloat() * (Assets.screenWidth / SECTORES - Hormiguero.TAMANO) + (Assets.screenWidth / SECTORES) * (SECTORES - 1);
+            float y2 = ran.nextFloat() * Assets.screenHeight / SECTORES + Hormiguero.TAMANO;
+
+            float x3 = ran.nextFloat() * (Assets.screenWidth / SECTORES - Hormiguero.TAMANO) + (Assets.screenWidth / SECTORES) * (SECTORES - 1);
+            float y3 = ran.nextFloat() * (Assets.screenHeight / SECTORES - Hormiguero.TAMANO) + (Assets.screenHeight / SECTORES) * (SECTORES - 1);
+
+            float x4 = ran.nextFloat() * Assets.screenWidth / SECTORES + Hormiguero.TAMANO;
+            float y4 = ran.nextFloat() * (Assets.screenHeight / SECTORES - Hormiguero.TAMANO) + (Assets.screenHeight / SECTORES) * (SECTORES - 1);
+
+            float x5 = ran.nextFloat() * (Assets.screenWidth / SECTORES - Hormiguero.TAMANO) + (Assets.screenWidth / SECTORES) * (SECTORES / 2);
+            float y5 = ran.nextFloat() * (Assets.screenHeight / SECTORES - Hormiguero.TAMANO) + (Assets.screenHeight / SECTORES) * (SECTORES / 2);
+
+            switch (tipo) {
+                case Assets.VERDE:
+                    crearHormigaSoldado(tipo, new Vector2(x1, y1));
+                    break;
+                case Assets.NARANJA:
+                    crearHormigaSoldado(tipo, new Vector2(x2, y2));
+                    break;
+                case Assets.ROJA:
+                    crearHormigaSoldado(tipo, new Vector2(x3, y3));
+                    break;
+                case Assets.AZUL:
+                    crearHormigaSoldado(tipo, new Vector2(x4, y4));
+                    break;
+                default:
+                    crearHormigaSoldado(tipo, new Vector2(x5, y5));
+                    break;
             }
 
         }
     }
 
     public void crearPlantas(int numero) {
-        float xa = Assets.screenWidth - MARGEN_PLANTAS * 2 - Planta.TAMANO + MARGEN_PLANTAS;
-        float ya = Assets.screenHeight - MARGEN_PLANTAS * 2 - Planta.TAMANO + MARGEN_PLANTAS;
-        float x, y;
-
         for (int i = 0; i < numero; i++) {
-            x = ran.nextFloat() * xa;
-            y = ran.nextFloat() * ya;
-
-            for (Vector3 vec : coordSectores) {
-                if (x >= vec.x && x <= vec.x + (Assets.screenWidth / SECTORES) && y >= vec.y && y <= vec.y + (Assets.screenHeight)) {
-                    crearPlanta(new Vector2(x, y), ((int) vec.z));
-                }
-            }
-
+            crearPlanta(new Vector2(ran.nextFloat() * (Assets.screenWidth - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS, ran.nextFloat() * (Assets.screenHeight - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS));
         }
     }
 
     public void detectarColision() {
 
         for (MyActor act : pendientesEliminar) {
-            eliminarSector(act.getSector(), act);
+            actores.remove(act);
             act.remove();
         }
 
         pendientesEliminar.clear();
 
-        if (!sector1.isEmpty())
-            detectarColisionesSector(sector1);
-        if (!sector2.isEmpty())
-            detectarColisionesSector(sector2);
-        if (!sector3.isEmpty())
-            detectarColisionesSector(sector3);
-        if (!sector4.isEmpty())
-            detectarColisionesSector(sector4);
-        if (!sector5.isEmpty())
-            detectarColisionesSector(sector5);
-        if (!sector6.isEmpty())
-            detectarColisionesSector(sector6);
-        if (!sector7.isEmpty())
-            detectarColisionesSector(sector7);
-        if (!sector8.isEmpty())
-            detectarColisionesSector(sector8);
-        if (!sector9.isEmpty())
-            detectarColisionesSector(sector9);
-        if (!sector10.isEmpty())
-            detectarColisionesSector(sector10);
-        if (!sector11.isEmpty())
-            detectarColisionesSector(sector11);
-        if (!sector12.isEmpty())
-            detectarColisionesSector(sector12);
-        if (!sector13.isEmpty())
-            detectarColisionesSector(sector13);
-        if (!sector14.isEmpty())
-            detectarColisionesSector(sector14);
-        if (!sector15.isEmpty())
-            detectarColisionesSector(sector15);
-        if (!sector16.isEmpty())
-            detectarColisionesSector(sector16);
-        if (!sector17.isEmpty())
-            detectarColisionesSector(sector17);
-        if (!sector18.isEmpty())
-            detectarColisionesSector(sector18);
-        if (!sector19.isEmpty())
-            detectarColisionesSector(sector19);
-        if (!sector20.isEmpty())
-            detectarColisionesSector(sector20);
-        if (!sector21.isEmpty())
-            detectarColisionesSector(sector21);
-        if (!sector22.isEmpty())
-            detectarColisionesSector(sector22);
-        if (!sector23.isEmpty())
-            detectarColisionesSector(sector23);
-        if (!sector24.isEmpty())
-            detectarColisionesSector(sector24);
-        if (!sector25.isEmpty())
-            detectarColisionesSector(sector25);
-        if (!sector26.isEmpty())
-            detectarColisionesSector(sector26);
-        if (!sector27.isEmpty())
-            detectarColisionesSector(sector27);
-        if (!sector28.isEmpty())
-            detectarColisionesSector(sector28);
-        if (!sector29.isEmpty())
-            detectarColisionesSector(sector29);
-        if (!sector30.isEmpty())
-            detectarColisionesSector(sector30);
-        if (!sector31.isEmpty())
-            detectarColisionesSector(sector31);
-        if (!sector32.isEmpty())
-            detectarColisionesSector(sector32);
-        if (!sector33.isEmpty())
-            detectarColisionesSector(sector33);
-        if (!sector34.isEmpty())
-            detectarColisionesSector(sector34);
-        if (!sector35.isEmpty())
-            detectarColisionesSector(sector35);
-        if (!sector36.isEmpty())
-            detectarColisionesSector(sector36);
-    }
-
-    private void detectarColisionesSector(Vector<MyActor> sector) {
-        for (MyActor act1 : sector) {
+        for (MyActor act1 : actores) {
             if (act1 instanceof Hormiga && ((Hormiga) act1).isChocada())
                 continue;
-            for (MyActor act2 : sector) {
+            for (MyActor act2 : actores) {
                 if (act2 instanceof Hormiga && ((Hormiga) act2).isChocada())
                     continue;
                 if (act1 != act2 && (act2.getPolygon().contains(act1.getPolygon().getX(), act1.getPolygon().getY())
@@ -942,14 +449,7 @@ public class PantallaHormiga implements Screen {
                             Actions.run(new Runnable() {
                                 @Override
                                 public void run() {
-                                    float x = ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO);
-                                    float y = ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO);
-
-                                    for (Vector3 vec : coordSectores) {
-                                        if (x >= vec.x && x <= vec.x + (Assets.screenWidth / SECTORES) && y >= vec.y && y <= vec.y + (Assets.screenHeight)) {
-                                            crearHuevo(reproducirse(h1, h2), centroHuevo, ((int) vec.z));
-                                        }
-                                    }
+                                    crearHuevo(reproducirse(h1, h2), centroHuevo);
                                 }
                             })
                     )
@@ -1141,19 +641,10 @@ public class PantallaHormiga implements Screen {
             //TODO añadir hormiga
             for (int i = 0; i < HORMIGAS_POR_CLIC; i++) {
                 Random ran = new Random();
-
-                float x = touchPoint.x;
-                float y = touchPoint.y;
-
-                for (Vector3 vec : coordSectores) {
-                    if (x >= vec.x && x <= vec.x + (Assets.screenWidth / SECTORES) && y >= vec.y && y <= vec.y + (Assets.screenHeight)) {
-                        Obrera ho = new Obrera(ran.nextInt(5) + 1, x, y, ((int) vec.z));
-                        introducirSector(((int) vec.z), ho);
-                        stage.addActor(ho);
-                        ho.getPolygon().setPosition(ho.getX(), ho.getY());
-                    }
-                }
-
+                Obrera h = new Obrera(ran.nextInt(5) + 1, touchPoint.x, touchPoint.y);
+                actores.add(h);
+                stage.addActor(h);
+                h.getPolygon().setPosition(h.getX(), h.getY());
             }
         }
 
@@ -1161,17 +652,10 @@ public class PantallaHormiga implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P) || (Gdx.input.justTouched() && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
 
             //TODO añadir Planta
-            float x = touchPoint.x;
-            float y = touchPoint.y;
-
-            for (Vector3 vec : coordSectores) {
-                if (x >= vec.x && x <= vec.x + (Assets.screenWidth / SECTORES) && y >= vec.y && y <= vec.y + (Assets.screenHeight)) {
-                    Planta p = new Planta(x - Planta.TAMANO / 2, y - Planta.TAMANO / 2, ((int) vec.z));
-                    introducirSector(((int) vec.z), p);
-                    stage.addActor(p);
-                    p.getPolygon().setPosition(p.getX(), p.getY());
-                }
-            }
+            Planta p = new Planta(touchPoint.x - Planta.TAMANO / 2, touchPoint.y - Planta.TAMANO / 2);
+            actores.add(p);
+            stage.addActor(p);
+            p.getPolygon().setPosition(p.getX(), p.getY());
         }
     }
 
@@ -1179,7 +663,7 @@ public class PantallaHormiga implements Screen {
      * GETTERS AND SETTERS
      */
 
-    public static Vector<Vector3> getCoordSectores() {
-        return coordSectores;
+    public static Vector<MyActor> getActores() {
+        return actores;
     }
 }

@@ -31,8 +31,8 @@ public class Soldado extends Hormiga {
 
     public static final int TAMANO = Obrera.TAMANO;
 
-    public Soldado(int tipo, float posX, float posY, int sector) {
-        super(tipo, posX, posY, TAMANO, 0, sector);
+    public Soldado(int tipo, float posX, float posY) {
+        super(tipo, posX, posY, TAMANO, 0);
         setBounds(posX, posY, TAMANO, TAMANO);
 
         this.tipo = tipo;
@@ -83,13 +83,6 @@ public class Soldado extends Hormiga {
     /**
      * METODOS DEL SOLDADO
      */
-
-    public void comprobarIntrusos() {
-        switch (tipo) {
-            case Assets.VERDE:
-
-        }
-    }
 
     public Animation getAnimation() {
         switch (tipo) {

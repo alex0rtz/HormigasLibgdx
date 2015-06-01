@@ -11,10 +11,9 @@ public class Hormiguero extends MyActor {
     public static final float TAMANO = Obrera.TAMANO * 2f;
 
     public Hormiguero(int tipo, float posX, float posY) {
-        super(posX, posY, TAMANO, 0, 0);
+        super(posX, posY, TAMANO, 0);
 
         this.tipo = tipo;
-
         setBounds(posX, posY, TAMANO, TAMANO);
         setOrigin(TAMANO / 2, TAMANO / 2);
     }
@@ -52,4 +51,6 @@ public class Hormiguero extends MyActor {
     public int getTipo() {
         return tipo;
     }
+
+
 }

@@ -9,17 +9,15 @@ public class MyActor extends Actor {
 
     private float tamano;
     private float vision;
-    protected int sector;
 
     private Rectangle bounds;
     private Polygon polygon;
 
-    public MyActor(float x, float y, float tamano, float vision, int sector) {
+    public MyActor(float x, float y, float tamano, float vision) {
         bounds = new Rectangle(x, y, tamano, tamano);
 
         this.tamano = tamano;
         this.vision = vision;
-        this.sector = sector;
         polygon = new Polygon(new float[]{0, 0, bounds.width, 0, bounds.width, bounds.height, 0, bounds.height});
         polygon.setOrigin(bounds.width / 2, bounds.height / 2);
     }
@@ -40,9 +38,5 @@ public class MyActor extends Actor {
 
     public float getVision() {
         return vision;
-    }
-
-    public int getSector() {
-        return sector;
     }
 }

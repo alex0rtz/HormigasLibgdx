@@ -42,8 +42,8 @@ public class Obrera extends Hormiga {
      * CONSTRUCTOR
      */
 
-    public Obrera(int tipo, float posX, float posY, int sector) {
-        super(tipo, posX, posY, TAMANO, VISION, sector);
+    public Obrera(int tipo, float posX, float posY) {
+        super(tipo, posX, posY, TAMANO, VISION);
         setBounds(posX, posY, TAMANO, TAMANO);
 
         this.tipo = tipo;
