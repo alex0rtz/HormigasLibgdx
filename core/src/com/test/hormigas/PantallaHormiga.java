@@ -10,8 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import java.util.Random;
 import java.util.Vector;
@@ -27,15 +26,13 @@ public class PantallaHormiga implements Screen {
     private float tiempo_nueva_planta = 0;
     private final int MARGEN_PLANTAS = 70;
 
-    final int SECTORES = 6;
-
     /**
      * VARIABLES LIBGDX
      */
     private OrthographicCamera camera;
 
     private Stage stage;
-    private FillViewport viewport;
+    private ExtendViewport viewport;
 
     private SpriteBatch stageBatch;
 
@@ -46,11 +43,12 @@ public class PantallaHormiga implements Screen {
 
     public PantallaHormiga(HormigasGame game) {
         stageBatch = new SpriteBatch();
-        viewport = new FillViewport(Assets.screenWidth, Assets.screenHeight);
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, Assets.screenWidth, Assets.screenHeight);
+        camera.setToOrtho(false, Assets.mapWidth, Assets.mapHeight);
         camera.update();
+
+        viewport = new ExtendViewport(Assets.screenWidth, Assets.screenHeight, camera);
 
         actores = new Vector<>();
         pendientesEliminar = new Vector<>();
@@ -59,18 +57,16 @@ public class PantallaHormiga implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         Image background = new Image(Assets.background);
-        background.setSize(Assets.screenWidth, Assets.screenHeight);
-        background.setScaling(Scaling.fill);
+        background.setSize(Assets.mapWidth, Assets.mapHeight);
 
         stage.addActor(background);
 
-        crearHormigasObreras(1, 2);
-        crearHormigasObreras(2, 2);
-        crearHormigasObreras(3, 2);
-        crearHormigasObreras(4, 2);
-        crearHormigasObreras(5, 2);
-        crearPlantas(10);
-
+        crearHormigas(1, 2);
+        crearHormigas(2, 2);
+        crearHormigas(3, 2);
+        crearHormigas(4, 2);
+        crearHormigas(5, 2);
+        crearPlantas(100);
     }
 
     @Override
@@ -80,7 +76,7 @@ public class PantallaHormiga implements Screen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         camera.update();
 
         act(delta);
@@ -109,7 +105,7 @@ public class PantallaHormiga implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        stage.getViewport().update(width, height, false);
     }
 
     @Override
@@ -132,78 +128,12 @@ public class PantallaHormiga implements Screen {
      * ACCIONES EN PANTALLA
      */
 
-    public void crearHormiguero(final int tipo, Vector2 pos) {
-        Hormiguero h = new Hormiguero(tipo, pos.x, pos.y);
-        h.setZIndex(20);
-        stage.addActor(h);
-        h.getPolygon().setPosition(h.getX(), h.getY());
+    public void crearHormiga(Vector2 pos) {
+        crearHormiga(ran.nextInt(5) + 1, pos);
     }
 
-    public void crearHormigueros() {
-        Gdx.app.log("TAMANO", Assets.screenWidth + " - " + Assets.screenHeight);
-        Gdx.app.log("LOCALITATION", "1 de X entre 1 y " + (Assets.screenWidth / SECTORES + Hormiguero.TAMANO));
-        Gdx.app.log("LOCALITATION", "1 de Y entre 1 y " + (Assets.screenHeight / SECTORES + Hormiguero.TAMANO));
-        float x1 = ran.nextFloat() * (Assets.screenWidth / SECTORES) + Hormiguero.TAMANO;
-        float y1 = ran.nextFloat() * (Assets.screenHeight / SECTORES) + Hormiguero.TAMANO;
-        Gdx.app.log("LOCALITATION", "1: " + x1 + " - " + y1);
-
-        Gdx.app.log("LOCALITATION", "2 de X entre " + (((Assets.screenWidth / SECTORES) * (SECTORES - 1)) - Hormiguero.TAMANO) + " y " + (Assets.screenWidth));
-        Gdx.app.log("LOCALITATION", "2 de Y entre 1 y " + ((Assets.screenHeight / SECTORES) + Hormiguero.TAMANO));
-        float x2 = ran.nextFloat() * (Assets.screenWidth / SECTORES - Hormiguero.TAMANO) + (Assets.screenWidth / SECTORES) * (SECTORES - 1);
-        float y2 = ran.nextFloat() * Assets.screenHeight / SECTORES + Hormiguero.TAMANO;
-        Gdx.app.log("LOCALITATION", "2: " + x2 + " - " + y2);
-
-        Gdx.app.log("LOCALITATION", "3 de X entre " + (((Assets.screenWidth / SECTORES) * (SECTORES - 1)) - Hormiguero.TAMANO) + " y " + (Assets.screenWidth));
-        Gdx.app.log("LOCALITATION", "3 de Y entre " + (((Assets.screenHeight / SECTORES) * (SECTORES - 1)) - Hormiguero.TAMANO) + " y " + (Assets.screenHeight));
-        float x3 = ran.nextFloat() * (Assets.screenWidth / SECTORES - Hormiguero.TAMANO) + (Assets.screenWidth / SECTORES) * (SECTORES - 1);
-        float y3 = ran.nextFloat() * (Assets.screenHeight / SECTORES - Hormiguero.TAMANO) + (Assets.screenHeight / SECTORES) * (SECTORES - 1);
-        Gdx.app.log("LOCALITATION", "3: " + x3 + " - " + y3);
-
-        Gdx.app.log("LOCALITATION", "4 de X entre " + 1 + " y " + (Assets.screenWidth / SECTORES + Hormiguero.TAMANO));
-        Gdx.app.log("LOCALITATION", "4 de Y entre " + (((Assets.screenHeight / SECTORES) * (SECTORES - 1)) - Hormiguero.TAMANO) + " y " + (Assets.screenHeight));
-        float x4 = ran.nextFloat() * Assets.screenWidth / SECTORES + Hormiguero.TAMANO;
-        float y4 = ran.nextFloat() * (Assets.screenHeight / SECTORES - Hormiguero.TAMANO) + (Assets.screenHeight / SECTORES) * (SECTORES - 1);
-        Gdx.app.log("LOCALITATION", "4: " + x4 + " - " + y4);
-
-        Gdx.app.log("LOCALITATION", "5 de X entre " + (Assets.screenWidth / SECTORES) + " y " + (Assets.screenWidth / SECTORES - Hormiguero.TAMANO + (Assets.screenWidth / SECTORES)));
-        Gdx.app.log("LOCALITATION", "5 de Y entre " + (Assets.screenHeight / SECTORES) + " y " + (Assets.screenHeight / SECTORES - Hormiguero.TAMANO + (Assets.screenHeight / SECTORES)));
-        float x5 = ran.nextFloat() * (Assets.screenWidth / SECTORES - Hormiguero.TAMANO) + (Assets.screenWidth / SECTORES) * (SECTORES / 2);
-        float y5 = ran.nextFloat() * (Assets.screenHeight / SECTORES - Hormiguero.TAMANO) + (Assets.screenHeight / SECTORES) * (SECTORES / 2);
-        int s5 = 0;
-        Gdx.app.log("LOCALITATION", "5: " + x5 + " - " + y5);
-
-        for (int i = 1; i < 6; i++) {
-            switch (i) {
-                case 1:
-                    crearHormiguero(1, new Vector2(x1, y1));
-                    break;
-                case 2:
-                    crearHormiguero(2, new Vector2(x2, y2));
-                    break;
-                case 3:
-                    crearHormiguero(3, new Vector2(x3, y3));
-                    break;
-                case 4:
-                    crearHormiguero(4, new Vector2(x4, y4));
-                    break;
-                case 5:
-                    crearHormiguero(5, new Vector2(x5, y5));
-                    break;
-            }
-        }
-    }
-
-    public void crearHormigaSoldado(int tipo, Vector2 pos) {
-        Soldado h = new Soldado(tipo, pos.x, pos.y);
-        h.setZIndex(10);
-        actores.add(h);
-        stage.addActor(h);
-        h.setZIndex(500);
-        h.getPolygon().setPosition(h.getX(), h.getY());
-    }
-
-    public void crearHormigaObrera(int tipo, Vector2 pos) {
-        Obrera h = new Obrera(tipo, pos.x, pos.y);
+    public void crearHormiga(int tipo, Vector2 pos) {
+        Hormiga h = new Hormiga(tipo, pos.x, pos.y);
         h.setZIndex(10);
         actores.add(h);
         stage.addActor(h);
@@ -220,7 +150,7 @@ public class PantallaHormiga implements Screen {
                         Actions.run(new Runnable() {
                             @Override
                             public void run() {
-                                crearHormigaObrera(tipo, new Vector2(huevo.getX(), huevo.getY()));
+                                crearHormiga(tipo, new Vector2(huevo.getX(), huevo.getY()));
                                 huevo.remove();
                             }
                         })
@@ -235,53 +165,15 @@ public class PantallaHormiga implements Screen {
         p.getPolygon().setPosition(p.getX(), p.getY());
     }
 
-    public void crearHormigasObreras(int tipo, int numero) {
+    public void crearHormigas(int tipo, int numero) {
         for (int i = 0; i < numero; i++) {
-            crearHormigaObrera(tipo, new Vector2(ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)));
-        }
-    }
-
-    public void crearHormigasSoldados(int tipo, int numero) {
-        for (int i = 0; i < numero; i++) {
-            float x1 = ran.nextFloat() * (Assets.screenWidth / SECTORES) + Hormiguero.TAMANO;
-            float y1 = ran.nextFloat() * (Assets.screenHeight / SECTORES) + Hormiguero.TAMANO;
-
-            float x2 = ran.nextFloat() * (Assets.screenWidth / SECTORES - Hormiguero.TAMANO) + (Assets.screenWidth / SECTORES) * (SECTORES - 1);
-            float y2 = ran.nextFloat() * Assets.screenHeight / SECTORES + Hormiguero.TAMANO;
-
-            float x3 = ran.nextFloat() * (Assets.screenWidth / SECTORES - Hormiguero.TAMANO) + (Assets.screenWidth / SECTORES) * (SECTORES - 1);
-            float y3 = ran.nextFloat() * (Assets.screenHeight / SECTORES - Hormiguero.TAMANO) + (Assets.screenHeight / SECTORES) * (SECTORES - 1);
-
-            float x4 = ran.nextFloat() * Assets.screenWidth / SECTORES + Hormiguero.TAMANO;
-            float y4 = ran.nextFloat() * (Assets.screenHeight / SECTORES - Hormiguero.TAMANO) + (Assets.screenHeight / SECTORES) * (SECTORES - 1);
-
-            float x5 = ran.nextFloat() * (Assets.screenWidth / SECTORES - Hormiguero.TAMANO) + (Assets.screenWidth / SECTORES) * (SECTORES / 2);
-            float y5 = ran.nextFloat() * (Assets.screenHeight / SECTORES - Hormiguero.TAMANO) + (Assets.screenHeight / SECTORES) * (SECTORES / 2);
-
-            switch (tipo) {
-                case Assets.VERDE:
-                    crearHormigaSoldado(tipo, new Vector2(x1, y1));
-                    break;
-                case Assets.NARANJA:
-                    crearHormigaSoldado(tipo, new Vector2(x2, y2));
-                    break;
-                case Assets.ROJA:
-                    crearHormigaSoldado(tipo, new Vector2(x3, y3));
-                    break;
-                case Assets.AZUL:
-                    crearHormigaSoldado(tipo, new Vector2(x4, y4));
-                    break;
-                default:
-                    crearHormigaSoldado(tipo, new Vector2(x5, y5));
-                    break;
-            }
-
+            crearHormiga(tipo, new Vector2(ran.nextFloat() * (Assets.screenWidth - Planta.TAMANO), ran.nextFloat() * (Assets.screenHeight - Planta.TAMANO)));
         }
     }
 
     public void crearPlantas(int numero) {
         for (int i = 0; i < numero; i++) {
-            crearPlanta(new Vector2(ran.nextFloat() * (Assets.screenWidth - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS, ran.nextFloat() * (Assets.screenHeight - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS));
+            crearPlanta(new Vector2(ran.nextFloat() * (Assets.mapWidth - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS, ran.nextFloat() * (Assets.mapHeight - MARGEN_PLANTAS * 2 - Planta.TAMANO) + MARGEN_PLANTAS));
         }
     }
 
@@ -317,21 +209,6 @@ public class PantallaHormiga implements Screen {
             choqueHormigaPlanta((Hormiga) actor1, (Planta) actor2);
         else if (actor1 instanceof Planta && actor2 instanceof Hormiga)
             choqueHormigaPlanta((Hormiga) actor2, (Planta) actor1);
-    }
-
-    // TODO Cambiar que en vez compruebe los que estan dentro del radio de visión del soldado compruebe los que estan
-    // TODO dentro del radio de visión del Hormiguero
-    public static void detectarIntrusos(Soldado soldado) {
-        for (MyActor act : PantallaHormiga.getActores()) {
-            if (act instanceof Hormiga && ((Hormiga) act).isChocada())
-                continue;
-            if (soldado != act && (soldado.getTipo() == act.getTipo()) && (act.getPolygon().contains(soldado.getPolygon().getX(), soldado.getPolygon().getY())
-                    || act.getPolygon().contains(soldado.getPolygon().getX() + soldado.VISION, soldado.getPolygon().getY())
-                    || act.getPolygon().contains(soldado.getPolygon().getX() + Soldado.VISION, soldado.getPolygon().getY() + soldado.VISION)
-                    || act.getPolygon().contains(soldado.getPolygon().getX(), soldado.getPolygon().getY() + soldado.VISION))) {
-                soldado.mover(soldado.getAngle(new Vector2(act.getX(), act.getY())));
-            }
-        }
     }
 
     private void choqueHormigaPlanta(final Hormiga hormiga, final Planta planta) {
@@ -418,31 +295,68 @@ public class PantallaHormiga implements Screen {
             h2.clearActions();
         }
 
-        if (h1 instanceof Obrera || h2 instanceof Obrera) {
-            if (!h1.isEsAdulta() && h2.isEsAdulta()) {
-                if (h1.isEsAdulta()) {
-                    h1.rebotar();
-                    h2.seguirCreciendo();
-                    h2.mover(h2.getRandomAngle());
-                } else if (h2.isEsAdulta()) {
-                    h2.rebotar();
-                    h1.seguirCreciendo();
-                    h1.mover(h1.getRandomAngle());
-                } else {
-                    h1.seguirCreciendo();
-                    h1.rebotar();
-                    h2.seguirCreciendo();
-                    h2.mover(h2.getRandomAngle());
-                }
-                return;
+        if (!h1.isEsAdulta() || !h2.isEsAdulta()) {
+            if (h1.isEsAdulta()) {
+                h1.rebotar();
+                h2.seguirCreciendo();
+                h2.mover(h2.getRandomAngle());
+            } else if (h2.isEsAdulta()) {
+                h2.rebotar();
+                h1.seguirCreciendo();
+                h1.mover(h1.getRandomAngle());
+            } else {
+                h1.seguirCreciendo();
+                h1.rebotar();
+                h2.seguirCreciendo();
+                h2.mover(h2.getRandomAngle());
             }
+            return;
         }
 
         // Reproducirse
         int pro1 = ran.nextInt(100) + 1;
         int pro2 = ran.nextInt(100) + 1;
 
-        if (pro1 >= 1 && pro1 <= h1.probabilidadObreras().x || pro2 >= 1 && pro2 <= h2.probabilidadObreras().x) {
+        int pp1;
+        int pr1;
+        int pp2;
+        int pr2;
+
+        if (h1.getTipo() == Hormiga.VERDE) {
+            pr1 = 20;
+            pp1 = 0;
+        } else if (h1.getTipo() == Hormiga.NARANJA) {
+            pp1 = 40;
+            pr1 = 20;
+        } else if (h1.getTipo() == Hormiga.ROJA) {
+            pp1 = 80;
+            pr1 = 20;
+        } else if (h1.getTipo() == Hormiga.AZUL) {
+            pp1 = 20;
+            pr1 = 20;
+        } else {
+            pp1 = 60;
+            pr1 = 20;
+        }
+
+        if (h2.getTipo() == Hormiga.VERDE) {
+            pr2 = 20;
+            pp2 = 0;
+        } else if (h2.getTipo() == Hormiga.NARANJA) {
+            pp2 = 40;
+            pr2 = 20;
+        } else if (h2.getTipo() == Hormiga.ROJA) {
+            pp2 = 80;
+            pr2 = 20;
+        } else if (h2.getTipo() == Hormiga.AZUL) {
+            pp2 = 20;
+            pr2 = 20;
+        } else {
+            pp2 = 60;
+            pr2 = 20;
+        }
+
+        if (pro1 >= 1 && pro1 <= pp1 || pro2 >= 1 && pro2 <= pp2) {
             h1.mirar(h2);
             h2.mirar(h1);
             h1.pelear();
@@ -450,7 +364,7 @@ public class PantallaHormiga implements Screen {
             pelearse(h1, h2);
             comprobarMuerte(h1);
             comprobarMuerte(h2);
-        } else if (pro1 >= h1.probabilidadObreras().x + 1 && pro1 <= h1.probabilidadObreras().x + h1.probabilidadObreras().y || pro2 >= h2.probabilidadObreras().x + 1 && pro2 <= h2.probabilidadObreras().x + h2.probabilidadObreras().y) {
+        } else if (pro1 >= pp1 + 1 && pro1 <= pp1 + pr1 || pro2 >= pp2 + 1 && pro2 <= pp2 + pr2) {
             h1.mirar(h2);
             h2.girar(h1);
             h1.pelear();
@@ -653,21 +567,27 @@ public class PantallaHormiga implements Screen {
 
         stage.getViewport().unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY()));
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
-            camera.translate(-32, 0);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
-            camera.translate(32, 0);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
-            camera.translate(0, -32);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
-            camera.translate(0, 32);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+            camera.translate(-5, 0);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            camera.translate(5, 0);
+        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+            camera.translate(0, 5);
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+            camera.translate(0, -5);
+
+
+        if (Gdx.input.isKeyPressed(Input.Keys.PLUS))
+            camera.zoom -= .01;
+        if (Gdx.input.isKeyPressed(Input.Keys.MINUS))
+            camera.zoom += .01;
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.H) || (Gdx.input.justTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT))) {
 
             //TODO añadir hormiga
             for (int i = 0; i < HORMIGAS_POR_CLIC; i++) {
                 Random ran = new Random();
-                Obrera h = new Obrera(ran.nextInt(5) + 1, touchPoint.x, touchPoint.y);
+                Hormiga h = new Hormiga(ran.nextInt(5) + 1, touchPoint.x, touchPoint.y);
                 actores.add(h);
                 stage.addActor(h);
                 h.getPolygon().setPosition(h.getX(), h.getY());

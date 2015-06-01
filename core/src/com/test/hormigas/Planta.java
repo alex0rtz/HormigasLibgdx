@@ -16,10 +16,10 @@ public class Planta extends MyActor {
 
     private final int ENERGIA_MAX = 4;
 
-    public static final float TAMANO = Obrera.TAMANO * 1.5f;
+    public static final float TAMANO = Hormiga.TAMANO * 1.5f;
 
     public Planta(float posX, float posY) {
-        super(posX, posY, TAMANO, 0, 0);
+        super(posX, posY, TAMANO);
 
         setBounds(posX, posY, TAMANO, TAMANO);
         setOrigin(TAMANO / 2, TAMANO / 2);
