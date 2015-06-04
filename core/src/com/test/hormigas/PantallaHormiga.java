@@ -567,20 +567,35 @@ public class PantallaHormiga implements Screen {
 
         stage.getViewport().unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY()));
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        if (camera.position.x > Assets.screenWidth / 2 * camera.zoom && Gdx.input.isKeyPressed(Input.Keys.LEFT))
             camera.translate(-5, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        if (camera.position.x < Assets.screenWidth / 2 * camera.zoom)
+            camera.position.x = Assets.screenWidth / 2 * camera.zoom;
+
+        if (camera.position.x < Assets.mapWidth - (Assets.screenWidth / 2 * camera.zoom) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             camera.translate(5, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+        if (camera.position.x > Assets.mapWidth - (Assets.screenWidth / 2 * camera.zoom))
+            camera.position.x = Assets.mapWidth - (Assets.screenWidth / 2 * camera.zoom);
+
+        if (camera.position.y < Assets.mapHeight - (Assets.screenHeight / 2 * camera.zoom) && Gdx.input.isKeyPressed(Input.Keys.UP))
             camera.translate(0, 5);
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        if (camera.position.y > Assets.mapHeight - (Assets.screenHeight / 2 * camera.zoom))
+            camera.position.y = Assets.mapHeight - (Assets.screenHeight / 2 * camera.zoom);
+
+        if (camera.position.y > Assets.screenHeight / 2 * camera.zoom && Gdx.input.isKeyPressed(Input.Keys.DOWN))
             camera.translate(0, -5);
+        if (camera.position.y < Assets.screenHeight / 2 * camera.zoom)
+            camera.position.y = Assets.screenHeight / 2 * camera.zoom;
 
-
-        if (Gdx.input.isKeyPressed(Input.Keys.PLUS))
+        if (camera.zoom > 0.5f && Gdx.input.isKeyPressed(Input.Keys.PLUS))
             camera.zoom -= .01;
-        if (Gdx.input.isKeyPressed(Input.Keys.MINUS))
+        if (Assets.screenWidth * camera.zoom < Assets.mapWidth && Gdx.input.isKeyPressed(Input.Keys.MINUS))
             camera.zoom += .01;
+
+        if (Assets.screenWidth * camera.zoom > Assets.mapWidth)
+            camera.zoom = Assets.mapWidth / Assets.screenWidth;
+
+        Gdx.app.log("CAMERA", "" + (Assets.screenWidth * camera.zoom));
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.H) || (Gdx.input.justTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT))) {
 
