@@ -16,7 +16,6 @@ public class HormigasGame extends Game {
         logger = new FPSLogger();
     }
 
-
     @Override
     public void render() {
         super.render();
